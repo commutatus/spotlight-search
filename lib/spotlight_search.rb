@@ -3,7 +3,8 @@ require 'spotlight_search/version'
 require 'spotlight_search/railtie' if defined?(Rails)
 
 module SpotlightSearch
-  class << self
+  extend ActiveSupport::Concern
+  module ClassMethods
     def filter_by(page, filter_params = {}, sort_params = {})
       filtered_result = OpenStruct.new
       sort_column = self.column_names.include?(sort_params[:sort_column]) ? sort_params[:sort_column] : "created_at"
