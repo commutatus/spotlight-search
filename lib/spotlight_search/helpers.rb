@@ -1,6 +1,6 @@
 module SpotlightSearch
   module Helpers
-    
+
     def sortable(column, title = nil, sort_column="created_at", sort_direction="asc")
       title ||= column.titleize
       css_class = column == sort_column ? "current #{sort_direction}" : nil
@@ -21,7 +21,7 @@ module SpotlightSearch
               end
             end
             current_page = content_tag :li do
-              tag.a class: 'btn btn-bordered mx-2', data: {sort_column: @filtered_result.sort[:sort_column], sort_direction: @filtered_result.sort[:sort_direction], page: facets.current_page, behaviour: 'current-page' } do
+              tag.a class: 'btn btn-bordered mx-2', data: {sort_column: facets.sort[:sort_column], sort_direction: facets.sort[:sort_direction], page: facets.current_page, behaviour: 'current-page' } do
                 "Showing #{facets.current_page} of #{facets.total_pages} pages"
               end
             end
