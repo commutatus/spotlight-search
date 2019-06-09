@@ -1,5 +1,6 @@
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+# Dir.glob("./**/**/*.rb").each { |path| require path }
 require "spotlight_search/version"
 
 Gem::Specification.new do |s|
@@ -24,5 +25,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "bundler", "~> 2.0"
   s.add_development_dependency "rake", "~> 10.0"
+  s.add_development_dependency "rails", "~> 5.0.7"
   s.add_development_dependency "rspec", "~> 3.0"
+  s.add_runtime_dependency 'axlsx'
 end

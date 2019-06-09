@@ -4,6 +4,10 @@ require 'spotlight_search/railtie' if defined?(Rails)
 
 module SpotlightSearch
   extend ActiveSupport::Concern
+
+  autoload :Exceptions, 'spotlight_search/exceptions'
+  autoload :ExportableColumns, 'spotlight_search/exportable_columns'
+
   module ClassMethods
     def filter_by(page, filter_params = {}, sort_params = {})
       filtered_result = OpenStruct.new
