@@ -36,6 +36,7 @@ First step is to add the search method to the index action.
 
 `filter_by` is the search method which accepts 3 arguments. `page`, `filter_params`, `sort_params`.
 All 3 params are sent from the JS which is handled by the gem.
+
 **STEP - 2**
 
 Second Step is to add the permitted params. Since the JS is taking up values from HTML,
