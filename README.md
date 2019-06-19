@@ -26,6 +26,7 @@ After installing the gem to the project, there are few places you will have to m
 
 ### Controller
 
+**STEP - 1**
 First step is to add the search method to the index action.
 
 ```
@@ -34,7 +35,7 @@ First step is to add the search method to the index action.
 
 `filter_by` is the search method which accepts 3 arguments. `page`, `filter_params`, `sort_params`.
 All 3 params are sent from the JS which is handled by the gem.
-
+**STEP - 2**
 Second Step is to add the permitted params. Since the JS is taking up values from HTML,
 we do not want all params to be accepted. Permit only the scopes that you want to allow.
 
@@ -49,7 +50,7 @@ end
 ```
 
 ### HTML
-
+**STEP - 1 Search**
 First step is to add the input box to search. Here there are few elements that should be placed mandatorily.
 
 ```
@@ -67,6 +68,16 @@ The elements that should be placed mandatorily are
   * `data-scope="search"` This is the model scope name, The helper method will call this when filter is applied.
   * `data-type="input-filter"` This is to tell if the element is input or select other value is `data-type="select-filter"`
 
+**STEP - 2 Pagination**
+We will add the paginate helper to the bottom of the partial which gets replaced.
+```
+= cm_paginate(@filtered_result.facets)
+```
+**STEP - 3 Sort**
+If any of the header needs to be sorted, then we will  add the following helper
+```
+th = sortable "name", "Name", @filtered_result.sort[:sort_column], @filtered_result.sort[:sort_direction]
+```
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
