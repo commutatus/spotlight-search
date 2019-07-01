@@ -43,10 +43,7 @@ get_paginated_list = function(page, thisObj) {
       return $('.' + success_replace_class).html(data);
     },
     error: function(jqxhr, textStatus, errorThrown) {
-      alert(errorThrown);
-      return $.jGrowl("Whoops! There was an error processing your request. Please contact support!")({
-        life: 2000
-      });
+      console.log(errorThrown, textStatus);
     }
   });
 };
