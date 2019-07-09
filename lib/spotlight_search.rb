@@ -12,7 +12,7 @@ module SpotlightSearch
       sort_params = {sort_column: sort_column, sort_direction: sort_direction}
       raw_data = self.filter(filter_params).sort_list(sort_column, sort_direction)
       filtered_result.data = raw_data.page(page).per(30)
-      filtered_result.facets = self.paginate(page, raw_data.size)
+      filtered_result.facets = self.paginate(page, raw_data.distinct('products.id').size)
       filtered_result.sort = sort_params
       return filtered_result
     end
