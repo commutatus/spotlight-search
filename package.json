@@ -1,0 +1,9 @@
+{
+  "name": "spotlight-search",
+  "version": "0.1.3",
+  "description": "Makes Rails admin panel search easier",
+  "main": "app/javascripts/packs/spotlight_search.js",
+  "repository": "https://github.com/commutatus/spotlight-search.git",
+  "author": "Anbazhagan Palani",
+  "license": "MIT"
+}
