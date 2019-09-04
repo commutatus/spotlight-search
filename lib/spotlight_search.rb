@@ -18,6 +18,8 @@ module SpotlightSearch
       filtered_result.data = raw_data.page(page).per(30)
       filtered_result.facets = self.paginate(page, raw_data.size)
       filtered_result.sort = sort_params
+      filtered_result.facets.sort = sort_params
+
       return filtered_result
     end
 

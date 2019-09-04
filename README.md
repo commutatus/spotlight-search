@@ -20,6 +20,70 @@ Or install it manually:
 
 ## Usage
 
+After installing the gem to the project, there are few places you will have to make changes.
+
+### Controller
+
+**STEP - 1**
+
+First step is to add the search method to the index action.
+
+```
+@filtered_result = @workshop.filter_by(params[:page], filter_params.to_h, sort_params.to_h)
+```
+
+`filter_by` is the search method which accepts 3 arguments. `page`, `filter_params`, `sort_params`.
+All 3 params are sent from the JS which is handled by the gem.
+
+**STEP - 2**
+
+Second Step is to add the permitted params. Since the JS is taking up values from HTML,
+we do not want all params to be accepted. Permit only the scopes that you want to allow.
+
+```
+def filter_params
+  params.require(:filters).permit(:search) if params[:filters]
+end
+
+def sort_params
+  params.require(:sort).permit(:sort_column, :sort_direction) if params[:sort]
+end
+```
+
+### HTML
+**STEP - 1 Search**
+
+First step is to add the input box to search. Here there are few elements that should be placed mandatorily.
+
+```
+.filters.w-100 data-filter-url="/admin/workshops" data-replacement-class="workshops_table"
+	.col-md-4.input-group.search
+		input#workshop-search-filter.form-control.filter-box name=("search_term_for_workshops ") placeholder=("Search Workshops") type="text" data-behaviour="filter" data-scope="search" data-type="input-filter"
+```
+
+The elements that should be placed mandatorily are
+
+  * `.filters` All search input / select filter should be nested inside this class name.
+  * `data-filter-url` Is mandatory, this is the search URL, Mostly this will hit the index action.
+  * `data-replacement-class` After ajax this is the class name where the data will get appended.
+  * `data-behaviour="filter"` If the input behaviour is set to filter then this will get added to ajax
+  * `data-scope="search"` This is the model scope name, The helper method will call this when filter is applied.
+  * `data-type="input-filter"` This is to tell if the element is input or select other value is `data-type="select-filter"`
+
+**STEP - 2 Pagination**
+
+We will add the paginate helper to the bottom of the partial which gets replaced.
+```
+= cm_paginate(@filtered_result.facets)
+```
+
+**STEP - 3 Sort**
+
+If any of the header needs to be sorted, then we will  add the following helper
+```
+th = sortable "name", "Name", @filtered_result.sort[:sort_column], @filtered_result.sort[:sort_direction]
+```
+
 ### Export to file
 
 #### Model
