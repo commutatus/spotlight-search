@@ -30,27 +30,27 @@ module SpotlightSearch
       #
       def export_columns(enabled: false, only: nil, except: nil)
         if enabled
-          @export_enabled = true
+          @@export_enabled = true
           all_columns = self.column_names.map(&:to_sym)
           if only.present?
             unless (valid_columns = only & all_columns).size == only.size
               invalid_columns = only - valid_columns
               raise SpotlightSearch::Exceptions::InvalidColumns.new(nil, invalid_columns)
             end
-            @enabled_columns = only
+            @@enabled_columns = only
           else
-            @enabled_columns = all_columns
+            @@enabled_columns = all_columns
           end
           if except.present?
             unless (valid_columns = except & all_columns).size == only.size
               invalid_columns = except - valid_columns
               raise SpotlightSearch::Exceptions::InvalidColumns.new(nil, invalid_columns)
             end
-            @enabled_columns = @enabled_columns - except
+            @@enabled_columns = @@enabled_columns - except
           end
         else
-          @export_enabled = false
-          @enabled_columns = nil
+          @@export_enabled = false
+          @@enabled_columns = nil
         end
       end
 
@@ -59,7 +59,7 @@ module SpotlightSearch
         unless columns.is_a?(Array)
           raise SpotlightSearch::Exceptions::InvalidValue.new('Excepted Array. Invalid type received')
         end
-        unless (@enabled_columns & columns.map(&:to_sym)) == columns.size
+        unless (@@enabled_columns & columns.map(&:to_sym)) == columns.size
           return false
         end
         return true
