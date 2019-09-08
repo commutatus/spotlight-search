@@ -1,12 +1,14 @@
 require 'spotlight_search/engine'
 require 'spotlight_search/version'
+require 'spotlight_search/exportable_columns'
 require 'spotlight_search/railtie' if defined?(Rails)
+require 'active_support'
+require 'active_support/rails'
 
 module SpotlightSearch
   extend ActiveSupport::Concern
 
   autoload :Exceptions, 'spotlight_search/exceptions'
-  autoload :ExportableColumns, 'spotlight_search/exportable_columns'
 
   module ClassMethods
     def filter_by(page, filter_params = {}, sort_params = {})
@@ -62,5 +64,4 @@ module SpotlightSearch
       return facets
     end
   end
-
 end
