@@ -1,5 +1,7 @@
 module SpotlightSearch
   module Helpers
+    include ActionView::Helpers::FormTagHelper
+    include ActionView::Helpers::TagHelper
 
     def sortable(column, title = nil, sort_column="created_at", sort_direction="asc")
       title ||= column.titleize
@@ -10,33 +12,62 @@ module SpotlightSearch
     end
 
     def exportable(email, klass)
-      tag.button "Export as excel", class: "modal-btn", data: {toggle: "modal", target: "#exportmodal"}
+      tag.div do
+        concat tag.button "Export as excel", class: "modal-btn", data: {toggle: "modal", target: "#exportmodal"}
+        concat column_pop_up(email, klass)
+      end
+    end
+
+    def column_pop_up(email, klass)
       tag.div class: "modal fade", id: "exportmodal", tabindex: "-1", role: "dialog", aria: {labelledby: "exportModal"} do
-        tag.div class: "modal-dialog", role: "document" do
+        tag.div class: "modal-dialog modal-lg", role: "document" do
           tag.div class: "modal-content" do
-            tag.div class: "modal-header" do
-              tag.button type: "button", class: "close", data: {dismiss: "modal"}, aria: {label: "Close"} do
-                tag.span "X", aria: {hidden: "true"}
-              end
-              tag.h4 "Select columns to export", class: "modal-title", id: "exportModal"
-            end
-            tag.div class: "modal-body" do
-              form_tag '/export_to_file', id: 'export-to-file-form' do
-                hidden_field_tag 'email', email, id: 'export-to-file-email'
-                hidden_field_tag 'filters', nil, id: 'export-to-file-filters'
-                hidden_field_tag 'klass', klass.to_s, id: 'export-to-file-klass'
-                klass.enabled_columns.each do |column_name|
-                  tag.div class: "row" do
-                    tag.div class: "col-md-4" do
-                      check_box_tag "columns[]", column_name
-                    end
-                  end
-                end
-                submit_tag 'Export as excel', class: 'btn btn-bordered export-to-file-btn'
-              end
-            end
+            concat pop_ups(email, klass)
           end
         end
+      end
+    end
+
+    def pop_ups(email, klass)
+      tag.div do
+        concat pop_up_header
+        concat pop_up_body(email, klass)
+      end
+    end
+
+    def pop_up_header
+      tag.div class: "modal-header" do
+        tag.button type: "button", class: "close", data: {dismiss: "modal"}, aria: {label: "Close"} do
+          tag.span "X", aria: {hidden: "true"}
+        end
+        tag.h4 "Select columns to export", class: "modal-title", id: "exportModal"
+      end
+    end
+
+    def pop_up_body(email, klass)
+      tag.div class: "modal-body" do
+        form_tag '/spotlight_search/export_to_file', id: 'export-to-file-form', style: "width: 100%;" do
+          concat hidden_field_tag 'email', email, id: 'export-to-file-email'
+          concat hidden_field_tag 'filters', nil, id: 'export-to-file-filters'
+          concat hidden_field_tag 'klass', klass.to_s, id: 'export-to-file-klass'
+          concat checkbox_row(klass)
+          concat submit_tag 'Export as excel', class: 'btn btn-bordered export-to-file-btn'
+        end
+      end
+    end
+
+    def checkbox_row(klass)
+      tag.div class: "row" do
+        klass.enabled_columns.each do |column_name|
+          concat create_checkbox(column_name)
+        end
+      end
+    end
+
+    def create_checkbox(column_name)
+      tag.div class: "col-md-4" do
+        concat check_box_tag "columns[]", column_name.to_s
+        concat column_name.to_s
       end
     end
 

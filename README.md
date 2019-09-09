@@ -25,6 +25,7 @@ Or install it manually:
   * [View](#view)
 2. [Export table data to excel](#export-table-data-to-excel)
   * [Initializer](#initializer)
+  * [Routes](#Routes)
   * [Model](#model)
   * [View](#export-view)
 
@@ -104,6 +105,13 @@ An initializer will have to be created to extend the functionality to ActiveReco
   ActiveRecord::Base.include SpotlightSearch::ExportableColumns
 ```
 
+#### Routes
+A line has to be added to the routes.
+
+```ruby
+mount SpotlightSearch::Engine => '/spotlight_search'
+```
+
 #### Model
 Enables or disables export and specifies which all columns can be
 exported. Export is disabled for all columns by default.
@@ -166,7 +174,7 @@ This will first show a popup where an option to select the export enabled column
 
 **Note**
 
-You will need to have a background job processor such as `sidekiq`, `resque`, `delayed_job` etc as the file will be generated in the background and will be sent to the email passed.
+You will need to have a background job processor such as `sidekiq`, `resque`, `delayed_job` etc as the file will be generated in the background and will be sent to the email passed. If you need to use any other service for sending emails, you will need to override `ExportMailer` class.
 
 ## Development
 

@@ -1,6 +1,9 @@
+require 'axlsx'
+
 module SpotlightSearch
   class ExportJob < ApplicationJob
-    def perform(email, klass, columns = nil, filters = nil)
+    def perform(email, klass, columns = [], filters = {})
+      klass = klass.constantize
       records = get_records(klass, filters, columns)
       file_path = create_excel(records, klass.name)
       subject = "#{klass.name} export at #{Time.now}"
@@ -10,17 +13,19 @@ module SpotlightSearch
 
     def get_records(klass, filters, columns)
       records = klass
-      if filters['filters'].present?
-        filters['filters'].each do |scope, scope_args|
-          if scope_args.is_a?(Array)
-            records = records.send(scope, *scope_args)
-          else
-            records = records.send(scope, scope_args)
+      if filters
+        if filters['filters'].present?
+          filters['filters'].each do |scope, scope_args|
+            if scope_args.is_a?(Array)
+              records = records.send(scope, *scope_args)
+            else
+              records = records.send(scope, scope_args)
+            end
           end
         end
-      end
-      if filters['sort'].present?
-        records = records.order("#{filters['sort']['sort_column']} #{filters['sort']['sort_direction']}")
+        if filters['sort'].present?
+          records = records.order("#{filters['sort']['sort_column']} #{filters['sort']['sort_direction']}")
+        end
       end
       columns = columns.map(&:to_sym)
       records.select(*columns)
