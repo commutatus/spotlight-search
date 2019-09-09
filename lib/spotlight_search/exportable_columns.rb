@@ -1,6 +1,6 @@
 module SpotlightSearch
   module ExportableColumns
-    cattr_accessor :enabled_columns, :export_enabled
+    extend ActiveSupport::Concern
 
     module ClassMethods
       # Enables or disables export and specifies which all columns can be
@@ -30,27 +30,27 @@ module SpotlightSearch
       #
       def export_columns(enabled: false, only: nil, except: nil)
         if enabled
-          @@export_enabled = true
+          self.export_enabled = true
           all_columns = self.column_names.map(&:to_sym)
           if only.present?
             unless (valid_columns = only & all_columns).size == only.size
               invalid_columns = only - valid_columns
               raise SpotlightSearch::Exceptions::InvalidColumns.new(nil, invalid_columns)
             end
-            @@enabled_columns = only
+            self.enabled_columns = only
           else
-            @@enabled_columns = all_columns
+            self.enabled_columns = all_columns
           end
           if except.present?
-            unless (valid_columns = except & all_columns).size == only.size
+            unless (valid_columns = except & all_columns).size == except.size
               invalid_columns = except - valid_columns
               raise SpotlightSearch::Exceptions::InvalidColumns.new(nil, invalid_columns)
             end
-            @@enabled_columns = @@enabled_columns - except
+            self.enabled_columns = self.enabled_columns - except
           end
         else
-          @@export_enabled = false
-          @@enabled_columns = nil
+          self.export_enabled = false
+          self.enabled_columns = nil
         end
       end
 
@@ -59,13 +59,16 @@ module SpotlightSearch
         unless columns.is_a?(Array)
           raise SpotlightSearch::Exceptions::InvalidValue.new('Excepted Array. Invalid type received')
         end
-        unless (@@enabled_columns & columns.map(&:to_sym)) == columns.size
+        unless (self.enabled_columns & columns.map(&:to_sym)) == columns.size
           return false
         end
         return true
       end
     end
+
+    included do
+      class_attribute :enabled_columns, instance_accessor: false
+      class_attribute :export_enabled, instance_accessor: false
+    end
   end
 end
-
-ActiveRecord::Base.extend SpotlightSearch::ExportableColumns

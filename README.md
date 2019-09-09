@@ -20,9 +20,17 @@ Or install it manually:
 
 ## Usage
 
-After installing the gem to the project, there are few places you will have to make changes.
+1. [Filtering, Sorting and Pagination](#filtering-sorting-and-pagination)
+  * [Controller](#controller)
+  * [View](#view)
+2. [Export table data to excel](#export-table-data-to-excel)
+  * [Initializer](#initializer)
+  * [Model](#model)
+  * [View](#export-view)
 
-### Controller
+### Filtering, Sorting and Pagination
+
+#### Controller
 
 **STEP - 1**
 
@@ -50,7 +58,9 @@ def sort_params
 end
 ```
 
-### HTML
+#### View
+Please note that the below code is in haml.
+
 **STEP - 1 Search**
 
 First step is to add the input box to search. Here there are few elements that should be placed mandatorily.
@@ -79,12 +89,20 @@ We will add the paginate helper to the bottom of the partial which gets replaced
 
 **STEP - 3 Sort**
 
-If any of the header needs to be sorted, then we will  add the following helper
+If any of the header needs to be sorted, then we will add the following helper
 ```
 th = sortable "name", "Name", @filtered_result.sort[:sort_column], @filtered_result.sort[:sort_direction]
 ```
 
-### Export to file
+### Export table data to excel
+
+#### Initializer
+An initializer will have to be created to extend the functionality to ActiveRecord.
+
+```ruby
+  # config/initializers/spotlight_search.rb
+  ActiveRecord::Base.include SpotlightSearch::ExportableColumns
+```
 
 #### Model
 Enables or disables export and specifies which all columns can be
@@ -122,7 +140,7 @@ For excluding only specific columns and allowing all others
   end
 ```
 
-#### View
+#### <a name="export-view"></a>View
 
 Add `exportable email, model_object` in your view to display the export button.
 
