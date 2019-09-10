@@ -1,12 +1,10 @@
 module SpotlightSearch
   class ExportJobsController < ApplicationController
-    include SpotlightSearch::Concerns::Exportable
-
     def export_job
       begin
         klass = params[:klass].constantize
         if klass.validate_exportable_columns(params[:columns])
-          ExportJob.perform_later(params[:email], klass, params[:columns], params[:filters])
+          ExportJob.perform_later(params[:email], klass.to_s, params[:columns], params[:filters])
           flash[:success] = 'Successfully queued for export'
         else
           flash[:error] = 'Invalid columns found'

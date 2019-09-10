@@ -28,4 +28,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rails", "~> 5.0.7"
   s.add_development_dependency "rspec", "~> 3.0"
   s.add_runtime_dependency 'axlsx'
+  s.add_runtime_dependency 'zip-zip'
 end
