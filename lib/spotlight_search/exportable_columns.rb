@@ -29,28 +29,33 @@ module SpotlightSearch
       #   end
       #
       def export_columns(enabled: false, only: nil, except: nil)
-        if enabled
-          self.export_enabled = true
-          all_columns = self.column_names.map(&:to_sym)
-          if only.present?
-            unless (valid_columns = only & all_columns).size == only.size
-              invalid_columns = only - valid_columns
-              raise SpotlightSearch::Exceptions::InvalidColumns.new(nil, invalid_columns)
+        begin
+          unless ActiveRecord::Base.connection.migration_context.needs_migration?
+            if enabled
+              self.export_enabled = true
+              all_columns = self.column_names.map(&:to_sym)
+              if only.present?
+                unless (valid_columns = only & all_columns).size == only.size
+                  invalid_columns = only - valid_columns
+                  raise SpotlightSearch::Exceptions::InvalidColumns.new(nil, invalid_columns)
+                end
+                self.enabled_columns = only
+              else
+                self.enabled_columns = all_columns
+              end
+              if except.present?
+                unless (valid_columns = except & all_columns).size == except.size
+                  invalid_columns = except - valid_columns
+                  raise SpotlightSearch::Exceptions::InvalidColumns.new(nil, invalid_columns)
+                end
+                self.enabled_columns = self.enabled_columns - except
+              end
+            else
+              self.export_enabled = false
+              self.enabled_columns = nil
             end
-            self.enabled_columns = only
-          else
-            self.enabled_columns = all_columns
           end
-          if except.present?
-            unless (valid_columns = except & all_columns).size == except.size
-              invalid_columns = except - valid_columns
-              raise SpotlightSearch::Exceptions::InvalidColumns.new(nil, invalid_columns)
-            end
-            self.enabled_columns = self.enabled_columns - except
-          end
-        else
-          self.export_enabled = false
-          self.enabled_columns = nil
+        rescue ActiveRecord::NoDatabaseError
         end
       end
 
