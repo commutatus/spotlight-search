@@ -5,7 +5,7 @@ module SpotlightSearch
     def perform(email, klass, columns = [], filters = {})
       klass = klass.constantize
       records = get_records(klass, filters, columns)
-      file_path = create_excel(records, klass.name)
+      file_path = create_excel(records, klass.name, columns)
       subject = "#{klass.name} export at #{Time.now}"
       ExportMailer.send_excel_file(email, file_path, subject).deliver_now
       File.delete(file_path)
@@ -33,20 +33,18 @@ module SpotlightSearch
 
     # Creating excel with the passed records
     # Keys as headers and values as row
-    def create_excel(records, klass)
-      records = records.as_json
-      headers = records.first.keys
+    def create_excel(records, klass, columns)
       size_arr = []
-      headers.size.times { size_arr << 22 }
+      columns.size.times { size_arr << 22 }
       xl = Axlsx::Package.new
       xl.workbook.add_worksheet do |sheet|
-        sheet.add_row headers, b: true
+        sheet.add_row columns, b: true
         records.each do |record|
-          sheet.add_row record.values
+          sheet.add_row columns.map { |column| record.send(column) }
         end
         sheet.column_widths *size_arr
       end
-      file_location = "#{Rails.root}/public/export_#{klass}_#{Time.now.to_s}"
+      file_location = "#{Rails.root}/public/export_#{klass}_#{Time.now.to_s}.xls"
       xl.serialize(file_location)
       file_location
     end
