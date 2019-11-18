@@ -1,3 +1,5 @@
+[![Gem Version](https://badge.fury.io/rb/spotlight_search.svg)](https://badge.fury.io/rb/spotlight_search)
+
 # SpotlightSearch
 
 It helps filtering, sorting and exporting tables easier.
