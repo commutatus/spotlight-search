@@ -5,7 +5,7 @@ module SpotlightSearch
     module ClassMethods
       # Enables or disables export and specifies which all columns can be
       # exported. For enabling export for all columns in all models
-      # 
+      #
       #   class ApplicationRecord < ActiveRecord::Base
       #     export_columns enabled: true
       #   end
@@ -16,7 +16,7 @@ module SpotlightSearch
       #     export_columns enabled: false
       #   end
       #
-      # For allowing export for only specific columns in a model  
+      # For allowing export for only specific columns in a model
       #
       #   class Person < ActiveRecord::Base
       #     export_columns enabled: true, only: [:created_at, :updated_at]
@@ -62,7 +62,7 @@ module SpotlightSearch
       # Validates whether the selected columns are allowed for export
       def validate_exportable_columns(columns)
         unless columns.is_a?(Array)
-          raise SpotlightSearch::Exceptions::InvalidValue.new('Excepted Array. Invalid type received')
+          raise SpotlightSearch::Exceptions::InvalidValue.new('Expected Array. Invalid type received')
         end
         unless (self.enabled_columns & columns.map(&:to_sym)) == columns.size
           return false

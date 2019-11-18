@@ -13,7 +13,7 @@ module SpotlightSearch
   module ClassMethods
     def filter_by(page, filter_params = {}, sort_params = {})
       filtered_result = OpenStruct.new
-      sort_column = self.column_names.include?(sort_params[:sort_column]) ? sort_params[:sort_column] : "created_at"
+      sort_column = self.column_names.include?(sort_params[:sort_column]) ? sort_params[:sort_column] : "#{self.table_name}.created_at"
       sort_direction = %w[asc desc].include?(sort_params[:sort_direction]) ? sort_params[:sort_direction] : "asc"
       sort_params = {sort_column: sort_column, sort_direction: sort_direction}
       raw_data = self.filter(filter_params).sort_list(sort_column, sort_direction)
