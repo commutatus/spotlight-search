@@ -20,6 +20,8 @@ Or install it manually:
 
     $ gem install spotlight_search
 
+Include the spotlight_search javascript by adding the line `//= require spotlight_search` to your `app/assets/javascripts/application.js`
+
 ## Usage
 
 1. [Filtering, Sorting and Pagination](#filtering-sorting-and-pagination)
@@ -169,7 +171,7 @@ Add `exportable email, model_object` in your view to display the export button.
   </td>
 </table>
 
-<%= exportable(current_user.email, current_user.class) %>
+<%= exportable(current_user.email, Person) %>
 ```
 
 This will first show a popup where an option to select the export enabled columns will be listed. This will also apply any filters that has been selected along with a sorting if applied. It then pushes the export to a background job which will send an excel file of the contents to the specified email. You can edit the style of the button using the class `export-to-file-btn`.
