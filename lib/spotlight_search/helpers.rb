@@ -50,7 +50,12 @@ module SpotlightSearch
           concat hidden_field_tag 'email', email, id: 'export-to-file-email'
           concat hidden_field_tag 'filters', nil, id: 'export-to-file-filters'
           concat hidden_field_tag 'klass', klass.to_s, id: 'export-to-file-klass'
-          concat checkbox_row(klass)
+          case SpotlightSearch.exportable_columns_version
+          when :v1
+            concat checkbox_row(klass)
+          when :v2
+            concat checkbox_row_v2(klass)
+          end
           concat submit_tag 'Export as excel', class: 'btn btn-bordered export-to-file-btn'
         end
       end
@@ -67,7 +72,22 @@ module SpotlightSearch
     def create_checkbox(column_name)
       tag.div class: "col-md-4" do
         concat check_box_tag "columns[]", column_name.to_s
-        concat column_name.to_s
+        concat column_name.to_s.humanize
+      end
+    end
+
+    def checkbox_row_v2(klass)
+      tag.div class: "row" do
+        SpotlightSearch::Utils.serialize_csv_columns(*klass.enabled_columns).each do |column_path|
+          concat create_checkbox_v2(column_path)
+        end
+      end
+    end
+
+    def create_checkbox_v2(column_path)
+      tag.div class: "col-md-4" do
+        concat check_box_tag "columns[]", column_path
+        concat column_path.to_s.split('/').last.humanize
       end
     end
 
