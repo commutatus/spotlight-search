@@ -34,7 +34,7 @@ module SpotlightSearch::Utils
       hash
     end
 
-    def json_params(hash, key, tokens)
+    def as_json_params(hash, key, tokens)
       hash.empty? && hash = { only: [], methods: [], include: recursive_hash }
       if tokens.empty?
         # base case
@@ -42,15 +42,28 @@ module SpotlightSearch::Utils
       else
         # recursive case
         # hash[:associations] ||= {}
-        hash[:include][key] = json_params(hash[:include][key], tokens.shift, tokens)
+        hash[:include][key] = as_json_params(hash[:include][key], tokens.shift, tokens)
       end
       hash
     end
 
     def recursive_hash
       func = ->(h, k) { h[k] = Hash.new(&func) }
-      # This hash assigns a new key
+      # This hash creates a new hash, infinitely deep, whenever a value is not found
+      # recursive_hash[:a][:b][:c][:d] will never fail
       Hash.new(&func)
     end
+
+    def flatten_hash(hash, prefix="", separator="_")
+      hash.reduce({}) do |acc, item|
+        case item[1]
+        when Hash
+          acc.merge(flatten_hash(item[1], "#{prefix}#{item[0]}#{separator}"))
+        else
+          acc.merge("#{prefix}#{item[0]}" => item[1])
+        end
+      end
+    end
+
   end
 end

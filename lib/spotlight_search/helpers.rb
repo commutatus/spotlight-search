@@ -48,7 +48,7 @@ module SpotlightSearch
       tag.div class: "modal-body" do
         form_tag '/spotlight_search/export_to_file', id: 'export-to-file-form', style: "width: 100%;" do
           concat hidden_field_tag 'email', email, id: 'export-to-file-email'
-          concat hidden_field_tag 'filters', nil, id: 'export-to-file-filters'
+          concat hidden_field_tag 'filters', nil, id: 'export-to-file-filters' # Filters are not being sent
           concat hidden_field_tag 'klass', klass.to_s, id: 'export-to-file-klass'
           case SpotlightSearch.exportable_columns_version
           when :v1
@@ -87,7 +87,7 @@ module SpotlightSearch
     def create_checkbox_v2(column_path)
       tag.div class: "col-md-4" do
         concat check_box_tag "columns[]", column_path
-        concat column_path.to_s.split('/').last.humanize
+        concat column_path.to_s.split('/').join('_').humanize
       end
     end
 

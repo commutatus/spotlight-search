@@ -37,7 +37,7 @@ module SpotlightSearch
         columns_hash = _model_exportable_columns(self, *record_fields, **associated_fields)
 
         raise SpotlightSearch::Exceptions::InvalidColumns, columns_hash[:invalid_columns] if columns_hash[:invalid_columns].size.positive?
-        self.enabled_columns = columns_hash[:valid_columns]
+        self.enabled_columns = [*record_fields, **associated_fields]
       rescue ActiveRecord::NoDatabaseError
         Rails.logger.info("No database error")
       end
@@ -64,7 +64,7 @@ module SpotlightSearch
           when ActiveRecord::Reflection::BelongsToReflection, ActiveRecord::Reflection::HasOneReflection
             if reflection.polymorphic?
               # We cannot process them further, so we'll assume it works and call it a day
-              valid_columns << { association: association_record_fields }
+              valid_columns << { association => association_record_fields }
             else
               columns_hash = _model_exportable_columns(reflection.klass, *association_record_fields)
               valid_columns << { association => columns_hash[:valid_columns] }
@@ -87,12 +87,10 @@ module SpotlightSearch
       # Validates whether the selected columns are allowed for export
       def validate_exportable_columns(columns)
         unless columns.is_a?(Array)
-          raise SpotlightSearch::Exceptions::InvalidValue.new('Expected Array. Invalid type received')
+          raise SpotlightSearch::Exceptions::InvalidValue, 'Expected Array. Invalid type received'
         end
-        unless (self.enabled_columns & columns.map(&:to_sym)) == columns.size
-          return false
-        end
-        return true
+
+        true
       end
     end
 
