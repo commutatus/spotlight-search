@@ -28,35 +28,30 @@ module SpotlightSearch
       #     export_columns enabled: true, except: [:created_at, :updated_at]
       #   end
       #
-      def export_columns(enabled: false, only: nil, except: nil)
-        begin
-          unless ActiveRecord::Base.connection.migration_context.needs_migration?
-            if enabled
-              self.export_enabled = true
-              all_columns = self.column_names.map(&:to_sym)
-              if only.present?
-                unless (valid_columns = only & all_columns).size == only.size
-                  invalid_columns = only - valid_columns
-                  raise SpotlightSearch::Exceptions::InvalidColumns.new(nil, invalid_columns)
-                end
-                self.enabled_columns = only
-              else
-                self.enabled_columns = all_columns
-              end
-              if except.present?
-                unless (valid_columns = except & all_columns).size == except.size
-                  invalid_columns = except - valid_columns
-                  raise SpotlightSearch::Exceptions::InvalidColumns.new(nil, invalid_columns)
-                end
-                self.enabled_columns = self.enabled_columns - except
-              end
-            else
-              self.export_enabled = false
-              self.enabled_columns = nil
-            end
+      def export_columns(enabled: false, only: nil, except: nil, associated: nil)
+        ActiveRecord::Base.connection.migration_context.needs_migration? && return
+        return unless enabled
+
+        self.export_enabled = true
+        all_columns = self.column_names.map(&:to_sym)
+        if only.present?
+          unless (valid_columns = only & all_columns).size == only.size
+            invalid_columns = only - valid_columns
+            raise SpotlightSearch::Exceptions::InvalidColumns, invalid_columns
           end
-        rescue ActiveRecord::NoDatabaseError
+          self.enabled_columns = only
+        else
+          self.enabled_columns = all_columns
         end
+        if except.present?
+          unless (valid_columns = except & all_columns).size == except.size
+            invalid_columns = except - valid_columns
+            raise SpotlightSearch::Exceptions::InvalidColumns, invalid_columns
+          end
+          self.enabled_columns = self.enabled_columns - except
+        end
+      rescue ActiveRecord::NoDatabaseError
+        Rails.logger.info("No database error")
       end
 
       # Validates whether the selected columns are allowed for export
@@ -72,8 +67,8 @@ module SpotlightSearch
     end
 
     included do
-      class_attribute :enabled_columns, instance_accessor: false
-      class_attribute :export_enabled, instance_accessor: false
+      class_attribute :enabled_columns, instance_accessor: false, default: nil
+      class_attribute :export_enabled, instance_accessor: false, default: false
     end
   end
 end

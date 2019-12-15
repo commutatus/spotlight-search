@@ -5,7 +5,13 @@ module SpotlightSearch
     def perform(email, klass, columns = [], filters = {})
       klass = klass.constantize
       records = get_records(klass, filters, columns)
-      file_path = create_excel(records, klass.name, columns)
+      file_path =
+        case SpotlightSearch.exportable_columns_version
+        when :v1
+          create_excel(records, klass.name, columns)
+        when :v2
+          create_excel_v2(records, klass.name)
+        end
       subject = "#{klass.name} export at #{Time.now}"
       ExportMailer.send_excel_file(email, file_path, subject).deliver_now
       File.delete(file_path)
@@ -13,7 +19,7 @@ module SpotlightSearch
 
     def get_records(klass, filters, columns)
       records = klass
-      if filters
+      if !filters.empty?
         if filters['filters'].present?
           filters['filters'].each do |scope, scope_args|
             if scope_args.is_a?(Array)
@@ -26,9 +32,16 @@ module SpotlightSearch
         if filters['sort'].present?
           records = records.order("#{filters['sort']['sort_column']} #{filters['sort']['sort_direction']}")
         end
+      else
+        records = records.all
       end
-      columns = columns.map(&:to_sym)
-      records.select(*columns)
+      case SpotlightSearch.exportable_columns_version
+      when :v1
+        columns = columns.map(&:to_sym)
+        records.select(*columns)
+      when :v2
+        records.as_json(SpotlightSearch::Utils.deserialize_csv_columns(columns, :as_json_params))
+      end
     end
 
     # Creating excel with the passed records
@@ -45,6 +58,24 @@ module SpotlightSearch
         sheet.column_widths *size_arr
       end
       file_location = "#{Rails.root}/public/export_#{klass}_#{Time.now.to_s}.xls"
+      xl.serialize(file_location)
+      file_location
+    end
+
+    def create_excel_v2(records, class_name)
+      flattened_records = records.map { |record| SpotlightSearch::Utils.flatten_hash(record) }
+      columns = flattened_records[0].keys
+      size_arr = []
+      columns.size.times { size_arr << 22 }
+      xl = Axlsx::Package.new
+      xl.workbook.add_worksheet do |sheet|
+        sheet.add_row columns, b: true
+        flattened_records.each do |record|
+          sheet.add_row(columns.map { |column| record[column] })
+        end
+        sheet.column_widths(*size_arr)
+      end
+      file_location = "#{Rails.root}/public/export_#{class_name}_#{Time.now.to_s}.xls"
       xl.serialize(file_location)
       file_location
     end
