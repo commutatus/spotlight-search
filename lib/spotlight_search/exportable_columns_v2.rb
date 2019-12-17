@@ -29,17 +29,7 @@ module SpotlightSearch
       #   end
       #
       def export_columns(*record_fields, **associated_fields)
-        ActiveRecord::Base.connection.migration_context.needs_migration? && return
-
-        # Check that all record fields are valid accessible. Error if it doesn't.
-        # for each association, check that if its a valid association, and take the recursive step with that association
-        # End result is setting up in self, enabled columns and enabled associated columns
-        columns_hash = _model_exportable_columns(self, *record_fields, **associated_fields)
-
-        raise SpotlightSearch::Exceptions::InvalidColumns, columns_hash[:invalid_columns] if columns_hash[:invalid_columns].size.positive?
         self.enabled_columns = [*record_fields, **associated_fields]
-      rescue ActiveRecord::NoDatabaseError
-        Rails.logger.info("No database error")
       end
 
       def _model_exportable_columns(klass, *record_fields, **associated_fields)
@@ -85,18 +75,23 @@ module SpotlightSearch
       end
 
       # Validates whether the selected columns are allowed for export
-      def validate_exportable_columns(columns)
-        unless columns.is_a?(Array)
-          raise SpotlightSearch::Exceptions::InvalidValue, 'Expected Array. Invalid type received'
-        end
-
+      def validate_exportable_columns(_columns)
+      #   ActiveRecord::Base.connection.migration_context.needs_migration? && return
+      #
+      #   # Check that all record fields are valid accessible. Error if it doesn't.
+      #   # for each association, check that if its a valid association, and take the recursive step with that association
+      #   # End result is setting up in self, enabled columns and enabled associated columns
+      #   columns_hash = _model_exportable_columns(self, *self.enabled_columns)
+      #
+      #   raise SpotlightSearch::Exceptions::InvalidColumns, columns_hash[:invalid_columns] if columns_hash[:invalid_columns].size.positive?
+      # rescue ActiveRecord::NoDatabaseError
+      #   Rails.logger.info("No database error")
         true
       end
     end
 
     included do
       class_attribute :enabled_columns, instance_accessor: false, default: nil
-      class_attribute :enabled_associated_columns, instance_accessor: false, default: nil
     end
   end
 end
