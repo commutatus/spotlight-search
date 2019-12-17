@@ -63,7 +63,6 @@ module SpotlightSearch
     end
 
     def params_to_post_helper(params)
-      pp params
       URI.decode_www_form(params.to_param).each do |param|
         concat hidden_field_tag param[0], param[1]
       end
