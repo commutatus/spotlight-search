@@ -4,12 +4,12 @@ require 'spotlight_search'
 
 describe 'Serializer' do
   it 'serializes a complex object' do
-    expect(SpotlightSearch::Utils.serialize_csv_columns(:a, :b, c: [:d, e: :h], f: :g)).to eql [:a, :b, "c/d", "c/e/h", "f/g"]
+    expect(SpotlightSearch::Utils.serialize_csv_columns(:a, :b, c: [:d, e: :h], f: :g)).to eql ["a", "b", "c/d", "c/e/h", "f/g"]
   end
 
   it 'serializes an object with multiple hashes at the end' do
     pp SpotlightSearch::Utils.serialize_csv_columns(:created_at, :transaction_amount, :preferred_month, :payment_type, :status, :customer=>[:full_name, :email, :mobile_number, :city, :college], :association=>[:orderable_display_name, :type], :seller=>[:full_name])
-    pp SpotlightSearch::Utils.serialize_csv_columns(**[:created_at, :transaction_amount, :preferred_month, :payment_type, :status, {:customer=>[:full_name, :email, :mobile_number, :city, :college]}, {:association=>[:orderable_display_name, :type]}, {:seller=>[:full_name]}])
+    pp SpotlightSearch::Utils.serialize_csv_columns(*[:created_at, :transaction_amount, :preferred_month, :payment_type, :status, {:customer=>[:full_name, :email, :mobile_number, :city, :college], :association=>[:orderable_display_name, :type], :seller=>[:full_name]}])
   end
 
   it 'deserializes in base mode' do
