@@ -79,8 +79,7 @@ module SpotlightSearch
         unless columns.is_a? Array
           raise SpotlightSearch::Exceptions::InvalidValue, 'Expected Array. Invalid type received'
         end
-
-        (enabled_columns & SpotlightSearch::Utils.serialize_csv_columns(enabled_columns)) == columns.size
+        (columns & SpotlightSearch::Utils.serialize_csv_columns(*enabled_columns)).size == columns.size # returns true if all columns are valid
       end
     end
 
