@@ -75,18 +75,12 @@ module SpotlightSearch
       end
 
       # Validates whether the selected columns are allowed for export
-      def validate_exportable_columns(_columns)
-      #   ActiveRecord::Base.connection.migration_context.needs_migration? && return
-      #
-      #   # Check that all record fields are valid accessible. Error if it doesn't.
-      #   # for each association, check that if its a valid association, and take the recursive step with that association
-      #   # End result is setting up in self, enabled columns and enabled associated columns
-      #   columns_hash = _model_exportable_columns(self, *self.enabled_columns)
-      #
-      #   raise SpotlightSearch::Exceptions::InvalidColumns, columns_hash[:invalid_columns] if columns_hash[:invalid_columns].size.positive?
-      # rescue ActiveRecord::NoDatabaseError
-      #   Rails.logger.info("No database error")
-        true
+      def validate_exportable_columns(columns)
+        unless columns.is_a? Array
+          raise SpotlightSearch::Exceptions::InvalidValue, 'Expected Array. Invalid type received'
+        end
+
+        (enabled_columns & SpotlightSearch::Utils.serialize_csv_columns(enabled_columns)) == columns.size
       end
     end
 
