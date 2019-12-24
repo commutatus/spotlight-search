@@ -2,9 +2,8 @@ require 'axlsx'
 
 module SpotlightSearch
   class ExportJob < ApplicationJob
-    def perform(email, klass, columns = [], filters = {})
-      klass = klass.constantize
-      records = get_records(klass, filters, columns)
+    def perform(klass, email, columns = [], filters = {}, sort = {})
+      records = get_records(klass, columns, filters, sort)
       file_path =
         case SpotlightSearch.exportable_columns_version
         when :v1
@@ -17,22 +16,17 @@ module SpotlightSearch
       File.delete(file_path)
     end
 
-    def get_records(klass, filters, columns)
+    def get_records(klass, columns, filters, sort)
       records = klass
-      if !filters.empty?
-        if filters['filters'].present?
-          filters['filters'].each do |scope, scope_args|
-            if scope_args.is_a?(Array)
-              records = records.send(scope, *scope_args)
-            else
-              records = records.send(scope, scope_args)
-            end
-          end
+      if filters.present?
+        filters.each do |scope, scope_args|
+          records = records.send(scope, scope_args)
         end
-        if filters['sort'].present?
-          records = records.order("#{filters['sort']['sort_column']} #{filters['sort']['sort_direction']}")
-        end
-      else
+      end
+      if sort.present?
+        records = records.order("#{sort['sort_column']} #{sort['sort_direction']}")
+      end
+      if filters.blank? && sort.blank?
         records = records.all
       end
       case SpotlightSearch.exportable_columns_version

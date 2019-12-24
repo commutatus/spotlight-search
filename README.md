@@ -101,6 +101,10 @@ th = sortable "name", "Name", @filtered_result.sort[:sort_column], @filtered_res
 
 ### Export table data to excel
 
+**Note**
+
+You will need to have a background job processor such as `sidekiq`, `resque`, `delayed_job` etc as the file will be generated in the background and will be sent to the email passed. If you need to use any other service for sending emails, you will need to override `ExportMailer` class.
+
 #### Initializer
 An initializer will have to be created to extend the functionality to ActiveRecord.
 
@@ -116,7 +120,34 @@ A line has to be added to the routes.
 mount SpotlightSearch::Engine => '/spotlight_search'
 ```
 
+#### <a name="export-view"></a>View
+
+Add `exportable email, model_object` in your view to display the export button.
+
+```html+erb
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+  </tr>
+  <td>
+    <% @records.each do |record| %>
+      <tr>
+        <td><%= record.name %></td>
+        <td><%= record.value %></td>
+    <% end %>
+  </td>
+</table>
+
+<%= exportable(current_user.email, Person) %>
+```
+
+This will first show a popup where an option to select the export enabled columns will be listed. This will also apply any filters that has been selected along with a sorting if applied. It then pushes the export to a background job which will send an excel file of the contents to the specified email. You can edit the style of the button using the class `export-to-file-btn`.
+
 #### Model
+
+##### V1
+
 Enables or disables export and specifies which all columns can be
 exported. Export is disabled for all columns by default.
 
@@ -152,33 +183,33 @@ For excluding only specific columns and allowing all others
   end
 ```
 
-#### <a name="export-view"></a>View
+##### V2
 
-Add `exportable email, model_object` in your view to display the export button.
+To use version two of column export, which supports model methods and nested associations, set it up in the spotlight initializer like this:
+```ruby
+# config/initializers/spotlight_search.rb
+ActiveRecord::Base.include SpotlightSearch::ExportableColumns
 
-```html+erb
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Email</th>
-  </tr>
-  <td>
-    <% @records.each do |record| %>
-      <tr>
-        <td><%= record.name %></td>
-        <td><%= record.value %></td>
-    <% end %>
-  </td>
-</table>
-
-<%= exportable(current_user.email, Person) %>
+SpotlightSearch.setup do |config|
+  config.exportable_columns_version = :v2
+end
 ```
 
-This will first show a popup where an option to select the export enabled columns will be listed. This will also apply any filters that has been selected along with a sorting if applied. It then pushes the export to a background job which will send an excel file of the contents to the specified email. You can edit the style of the button using the class `export-to-file-btn`.
+All fields will be disabled by default, so you will need to explicitly enable them by passing them to `export_columns`
 
-**Note**
+```ruby
+class Person < ActiveRecord::Base
+  export_columns :created_at, :formatted_amount, :preferred_month, :orderable_type, :payment_type, :status, customer: [:full_name, :email, :mobile_number, :city, :college], orderable: :orderable_display_name, seller: [:full_name]
+end
+```
 
-You will need to have a background job processor such as `sidekiq`, `resque`, `delayed_job` etc as the file will be generated in the background and will be sent to the email passed. If you need to use any other service for sending emails, you will need to override `ExportMailer` class.
+Nested association fields should go at the end of `export_columns`, following Ruby's standard syntax of placing keyword arguments at the end
+
+**Notes**
+- You will need to make `filter_params` and `sort_params` in your controller public, or the rendering of the form will fail
+- Be careful with methods that return a hash, as the algorithm will recursively create one column for every key inside that hash. One example is `Money` fields from the `money-rails` gem
+
+
 
 ## Development
 

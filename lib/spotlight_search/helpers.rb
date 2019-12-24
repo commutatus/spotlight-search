@@ -48,8 +48,9 @@ module SpotlightSearch
       tag.div class: "modal-body" do
         form_tag '/spotlight_search/export_to_file', id: 'export-to-file-form', style: "width: 100%;" do
           concat hidden_field_tag 'email', email, id: 'export-to-file-email'
-          concat hidden_field_tag 'filters', nil, id: 'export-to-file-filters' # Filters are not being sent
-          concat hidden_field_tag 'klass', klass.to_s, id: 'export-to-file-klass'
+          concat hidden_field_tag 'class_name', klass.to_s, id: 'export-to-file-klass'
+          params_to_post_helper(filters: controller.filter_params) if controller.filter_params
+          params_to_post_helper(sort: controller.sort_params) if controller.sort_params
           case SpotlightSearch.exportable_columns_version
           when :v1
             concat checkbox_row(klass)
@@ -58,6 +59,12 @@ module SpotlightSearch
           end
           concat submit_tag 'Export as excel', class: 'btn btn-bordered export-to-file-btn'
         end
+      end
+    end
+
+    def params_to_post_helper(params)
+      URI.decode_www_form(params.to_param).each do |param|
+        concat hidden_field_tag param[0], param[1]
       end
     end
 
@@ -86,8 +93,8 @@ module SpotlightSearch
 
     def create_checkbox_v2(column_path)
       tag.div class: "col-md-4" do
-        concat check_box_tag "columns[]", column_path
-        concat column_path.to_s.split('/').join('_').humanize
+        concat check_box_tag "columns[]", column_path, id: column_path.to_s.gsub('/', '-')
+        concat column_path.to_s.gsub('/', '_').humanize
       end
     end
 
