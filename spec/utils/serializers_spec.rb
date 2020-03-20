@@ -4,7 +4,7 @@ require 'spotlight_search'
 
 describe 'Serializer' do
   it 'serializes a complex object' do
-    expect(SpotlightSearch::Utils.serialize_csv_columns(:a, :b, c: [:d, e: :h], f: :g)).to eql ["a", "b", "c/d", "c/e/h", "f/g"]
+    expect(SpotlightSearch::Utils.serialize_csv_columns(:a, :b, c: [:d, :e, h: [:i, :j]], f: :g)).to eql ["a", "b", "c/d", "c/e", "c/h/i", "c/h/j", "f/g"]
   end
 
   it 'serializes an object with multiple hashes at the end' do

@@ -6,5 +6,11 @@ module SpotlightSearch
       attachments[file_path.split('/').last] = File.read(file_path)
       mail(to: email, subject: subject)
     end
+
+    def send_error_message(email, err)
+      @error_message = err.message
+      mail(to: email, subject: "Error generating CSV file")
+      Rollbar.error(err)
+    end
   end
 end
