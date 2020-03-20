@@ -11,9 +11,9 @@ module SpotlightSearch
       content_tag("a", title, class: css_class, data: {sort_column: column, sort_direction: direction, behaviour: 'sort', type: 'anchor-filter'})
     end
 
-    def exportable(email, klass)
+    def exportable(email, klass, html_class: [])
       tag.div do
-        concat tag.button "Export as excel", class: "modal-btn", data: {toggle: "modal", target: "#exportmodal"}
+        concat tag.button "Export as excel", class: html_class.append("modal-btn"), data: {toggle: "modal", target: "#exportmodal"}
         concat column_pop_up(email, klass)
       end
     end
@@ -46,7 +46,7 @@ module SpotlightSearch
 
     def pop_up_body(email, klass)
       tag.div class: "modal-body" do
-        form_tag '/spotlight_search/export_to_file', id: 'export-to-file-form', style: "width: 100%;" do
+        form_tag '/spotlight_search/export_to_file', id: 'export-to-file-form', style: "width: 100%;", class:"spotlight-csv-export-form" do
           concat hidden_field_tag 'email', email, id: 'export-to-file-email'
           concat hidden_field_tag 'class_name', klass.to_s, id: 'export-to-file-klass'
           params_to_post_helper(filters: controller.filter_params) if controller.filter_params
