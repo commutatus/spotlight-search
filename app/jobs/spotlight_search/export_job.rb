@@ -2,7 +2,8 @@ require 'axlsx'
 
 module SpotlightSearch
   class ExportJob < ApplicationJob
-    def perform(klass, email, columns = [], filters = {}, sort = {})
+    def perform(klass_name, email, columns = [], filters = {}, sort = {})
+      klass = klass_name.constantize
       records = get_records(klass, columns, filters, sort)
       file_path =
         case SpotlightSearch.exportable_columns_version
@@ -14,6 +15,8 @@ module SpotlightSearch
       subject = "#{klass.name} export at #{Time.now}"
       ExportMailer.send_excel_file(email, file_path, subject).deliver_now
       File.delete(file_path)
+    rescue StandsrdError(e)
+      ExportMailer.send_error_message(email, e).deliver_now
     end
 
     def get_records(klass, columns, filters, sort)
