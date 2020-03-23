@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "bundler", "~> 2.0"
   s.add_development_dependency "rake", ">= 12.3.3"
-  s.add_development_dependency "rails", "~> 5.0.7"
+  s.add_development_dependency "rails", "~> 5.2.4.2"
   s.add_development_dependency "rspec", "~> 3.0"
   s.add_runtime_dependency 'axlsx'
   s.add_runtime_dependency 'zip-zip'
