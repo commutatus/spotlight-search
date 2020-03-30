@@ -1,4 +1,4 @@
-require 'axlsx'
+require 'caxlsx'
 
 module SpotlightSearch
   class ExportJob < ApplicationJob
@@ -15,7 +15,7 @@ module SpotlightSearch
       subject = "#{klass.name} export at #{Time.now}"
       ExportMailer.send_excel_file(email, file_path, subject).deliver_now
       File.delete(file_path)
-    rescue StandsrdError(e)
+    rescue StandardError => e
       ExportMailer.send_error_message(email, e).deliver_now
     end
 
