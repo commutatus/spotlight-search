@@ -37,7 +37,7 @@ module SpotlightSearch
         columns = columns.map(&:to_sym)
         records.select(*columns)
       when :v2
-        records.as_json(SpotlightSearch::Utils.deserialize_csv_columns(columns, :as_json_params))
+        records.find_each.as_json(SpotlightSearch::Utils.deserialize_csv_columns(columns, :as_json_params))
       end
     end
 
