@@ -37,7 +37,9 @@ module SpotlightSearch
         columns = columns.map(&:to_sym)
         records.select(*columns)
       when :v2
-        records.find_each.as_json(SpotlightSearch::Utils.deserialize_csv_columns(columns, :as_json_params))
+        deserialized_columns = SpotlightSearch::Utils.deserialize_csv_columns(columns, :as_json_params)
+        # This includes isn't recursve, a full solution should be recursive
+        records.includes(deserialized_columns[:include].keys).find_each.as_json(deserialized_columns)
       end
     end
 
