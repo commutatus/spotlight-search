@@ -1,4 +1,4 @@
-require 'axlsx'
+require 'caxlsx'
 
 module SpotlightSearch
   class ExportJob < ApplicationJob
@@ -15,7 +15,7 @@ module SpotlightSearch
       subject = "#{klass.name} export at #{Time.now}"
       ExportMailer.send_excel_file(email, file_path, subject).deliver_now
       File.delete(file_path)
-    rescue StandsrdError(e)
+    rescue StandardError => e
       ExportMailer.send_error_message(email, e).deliver_now
     end
 
@@ -37,7 +37,9 @@ module SpotlightSearch
         columns = columns.map(&:to_sym)
         records.select(*columns)
       when :v2
-        records.as_json(SpotlightSearch::Utils.deserialize_csv_columns(columns, :as_json_params))
+        deserialized_columns = SpotlightSearch::Utils.deserialize_csv_columns(columns, :as_json_params)
+        # This includes isn't recursve, a full solution should be recursive
+        records.includes(deserialized_columns[:include].keys).find_each.as_json(deserialized_columns)
       end
     end
 
