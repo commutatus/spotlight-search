@@ -83,6 +83,24 @@ module SpotlightSearch
       end
     end
 
+    def filter_wrapper(data_behaviours, classes=nil)
+      tag.div class: "filter-wrapper d-flex filters #{classes}", data: data_behaviours do
+        yield
+      end
+    end
+
+    def cm_select_tag(select_options, data_behaviours, classes=nil, placeholder=nil)
+      select_tag :select_filter, options_for_select(select_options), class: "#{classes}", data: data_behaviours, include_blank: "#{placeholder}"
+    end
+
+    def cm_textfield_tag(data_behaviours, classes=nil, placeholder=nil)
+      text_field_tag :input_filter, '', class: "#{classes}", data: data_behaviours, placeholder: "#{placeholder}"   
+    end
+
+    def clear_filters(classes, clear_path, data_behaviours)
+      link_to 'Clear all', clear_path, class: "#{classes}", data: data_behaviours
+    end
+
     def checkbox_row_v2(klass)
       tag.div class: "row" do
         SpotlightSearch::Utils.serialize_csv_columns(*klass.enabled_columns).each do |column_path|
