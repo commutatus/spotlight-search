@@ -12,7 +12,8 @@ module SpotlightSearch
       def add_essentials
         append_to_file "app/javascript/packs/application.js" do 
           "require ('spotlight_search')"
-        end         
+        end
+        gem 'kaminari', '~> 1.2.1'
       end
   
       def edit_webpacker_yml

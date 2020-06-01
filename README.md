@@ -66,24 +66,61 @@ end
 #### View
 Please note that the below code is in haml.
 
-**STEP - 1 Search**
+**STEP - 1 Filters**
 
-First step is to add the input box to search. Here there are few elements that should be placed mandatorily.
+**Wrapping div for filters**
 
-```
-.filters.w-100 data-filter-url="/admin/workshops" data-replacement-class="workshops_table"
-	.col-md-4.input-group.search
-		input#workshop-search-filter.form-control.filter-box name=("search_term_for_workshops ") placeholder=("Search Workshops") type="text" data-behaviour="filter" data-scope="search" data-type="input-filter"
-```
+  First step is to add wrapper div around the filters you're going to add. Include this line at the beginning of your filter inputs
+    
+  ```
+    = filter_wrapper(data_behaviours, classes=nil)
 
-The elements that should be placed mandatorily are
+    <!-- Data attributes can be passed as a Hash and the below are mandatory -->
+      
+      {filter_url: '/users', replacement_class: 'users-table'}  
+    
+    <!-- Classes are optional and you can pass them as a String -->
+      
+      "filter-classes"
 
-  * `.filters` All search input / select filter should be nested inside this class name.
+  ```
+
   * `data-filter-url` Is mandatory, this is the search URL, Mostly this will hit the index action.
+
   * `data-replacement-class` After ajax this is the class name where the data will get appended.
-  * `data-behaviour="filter"` If the input behaviour is set to filter then this will get added to ajax
-  * `data-scope="search"` This is the model scope name, The helper method will call this when filter is applied.
-  * `data-type="input-filter"` This is to tell if the element is input or select other value is `data-type="select-filter"`
+
+**Select-tags and Inputs**
+
+  ```
+    <!-- This is to generate a select tag for filters. -->
+    = cm_select_tag(select_options, data_behaviours, classes=nil, placeholder=nil)
+  ```
+
+  * `select_options` this variable carries the options to the select tag.
+
+  ```
+    <!-- This is to generate a text input field for filters. -->
+    = cm_textfield_tag(data_behaviours, classes=nil, placeholder=nil)
+  ```
+
+  Common attributes
+
+  * `data_behaviours` this carries data attributes as a Hash to `select_tag` or `input`.
+    
+    These are mandatory attributes for filters
+    
+     `{behaviour: "filter", scope: "search", type: "(select/input)-filter}`
+
+    `data-behaviour="filter"` If the input behaviour is set to filter then this will get added to ajax.
+
+    `data-scope="search"` This is the model scope name, The helper method will call this when filter is applied.
+
+    `data-type="input-filter"` This is to tell if the element is input or select other value is `data-type="select-filter"`
+
+  * `classes` HTML classes can be passed as a string arguement for inputs/select tags.
+
+  * `placeholder` this arguement passes the placeholder for input/select tags.
+
 
 **STEP - 2 Pagination**
 
