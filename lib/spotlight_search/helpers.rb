@@ -97,8 +97,8 @@ module SpotlightSearch
       text_field_tag :input_filter, '', class: "#{classes}", data: data_behaviours, placeholder: "#{placeholder}"   
     end
 
-    def clear_filters(classes, clear_path, data_behaviours)
-      link_to 'Clear all', clear_path, class: "#{classes}", data: data_behaviours
+    def clear_filters(clear_path, classes=nil, data_behaviours=nil, clear_text=nil)
+      link_to "#{clear_text}", clear_path, class: "#{classes}", data: data_behaviours
     end
 
     def checkbox_row_v2(klass)

@@ -107,6 +107,14 @@ Please note that the below code is in haml.
     = cm_textfield_tag(data_behaviours, classes=nil, placeholder=nil)
   ```
 
+  ```
+    <!-- This is to revert all filters. -->
+    = clear_filters(clear_path, classes=nil, data_behaviours=nil, clear_text=nil)
+  ```
+  * `clear_path` this the controller index path.
+
+  * `clear_text` this gives the text for the `a` tag.
+
   Common attributes
 
   * `data_behaviours` this carries data attributes as a Hash to `select_tag` or `input`.
