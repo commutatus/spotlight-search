@@ -20,6 +20,10 @@ Or install it manually:
 
     $ gem install spotlight_search
 
+Generator that installs mandatory files and gems to application
+
+    $ rails g spotlight_search:install
+
 Include the spotlight_search javascript by adding the line `//= require spotlight_search` to your `app/assets/javascripts/application.js`
 
 ## Usage
