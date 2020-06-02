@@ -25,10 +25,12 @@ module SpotlightSearch
       end
 
       def copy_filter_contents_to_app
-        unless File.directory?("app/views/#{model}")
-          Dir.mkdir("app/views/#{model}")
+        if @options.filters?
+          unless File.directory?("app/views/#{model}")
+            Dir.mkdir("app/views/#{model}")
+          end
+          template 'filters.html.erb.template', "app/views/#{model}/_filters.html.slim"
         end
-        template 'filters.html.erb.template', "app/views/#{model}/_filters.html.slim"
       end
 
     end

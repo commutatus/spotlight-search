@@ -26,11 +26,11 @@ Generator that installs mandatory files and gems to application
 
 Generator that installs filter and table files to application
 
-    $ rails g spotlight_search:filter users --is-select=true --select-filters=order_status delivery_status --is-input=true --input-filters=search date
+    $ rails g spotlight_search:filter orders --filters search:input order_status:multi_select status:select
 
-    If select tags are going to be added keep `--is-select=true` and pass your filter scopes as an array `--select-filters=order_status delivery_status`
+    Filter arguments can be passed as an array and the format is `filter_scope:type_of_filter_input`
 
-    If textfield tags are going to be added keep `--is-input=true` and pass your filter scopes as an array `--input-filters=search date`
+    `--init_js` This flag installs necessary packages like Jquery, Coffeescript, Select2. You can ignore it by removing it from the command
 
 Include the spotlight_search javascript by adding the line `//= require spotlight_search` to your `app/assets/javascripts/application.js`
 
