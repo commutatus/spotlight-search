@@ -74,7 +74,7 @@ class Admin::<%= model.titleize %>Controller < ApplicationController
   end
 
   def filter_params
-    params.require(:filters).permit(<% @options.filters.join(', ') %>) if params[:filters]
+    params.require(:filters).permit(<%= @options.filters.join(', ') %>) if params[:filters]
     end
 
   def sort_params
