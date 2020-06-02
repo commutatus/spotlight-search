@@ -89,12 +89,16 @@ module SpotlightSearch
       end
     end
 
-    def cm_select_tag(select_options, data_behaviours, classes=nil, placeholder=nil)
-      select_tag :select_filter, options_for_select(select_options), class: "#{classes}", data: data_behaviours, include_blank: "#{placeholder}"
+    def cm_single_select_tag(select_options, data_behaviours, classes=nil, placeholder=nil)
+      select_tag data_behaviours[:scope], options_for_select(select_options), class: "#{classes}", data: data_behaviours, include_blank: "#{placeholder}"
     end
 
+    def cm_multi_select_tag(select_options, data_behaviours, classes=nil, placeholder=nil)
+      select_tag data_behaviours[:scope], options_for_select(select_options), class: "#{classes}", data: data_behaviours, include_blank: "#{placeholder}", multiple: true
+    end    
+
     def cm_textfield_tag(data_behaviours, classes=nil, placeholder=nil)
-      text_field_tag :input_filter, '', class: "#{classes}", data: data_behaviours, placeholder: "#{placeholder}"   
+      text_field_tag data_behaviours[:scope], '', class: "#{classes}", data: data_behaviours, placeholder: "#{placeholder}"   
     end
 
     def clear_filters(clear_path, classes=nil, data_behaviours=nil, clear_text=nil)
