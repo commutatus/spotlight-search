@@ -1,0 +1,16 @@
+.table-wrapper
+  table
+    thead
+      tr
+      <%- model.singularize.camelcase.constantize.column_names.each do |column| -%>
+        th = "<%= column.titleize %>"
+      <%- end -%>
+    
+    tbody
+      - @filtered_result.data.each do |<%= model.singularize %>|
+        tr
+        <%- model.singularize.camelcase.constantize.column_names.each do |column| -%>
+          td = <%= model.singularize %>.<%= column %>
+        <%- end -%>
+
+= cm_paginate(@filtered_result.facets)
