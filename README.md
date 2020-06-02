@@ -24,6 +24,14 @@ Generator that installs mandatory files and gems to application
 
     $ rails g spotlight_search:install
 
+Generator that installs filter and table files to application
+
+    $ rails g spotlight_search:filter users --is-select=true --select-filters=order_status delivery_status --is-input=true --input-filters=search date
+
+    If select tags are going to be added keep `--is-select=true` and pass your filter scopes as an array `--select-filters=order_status delivery_status`
+
+    If textfield tags are going to be added keep `--is-input=true` and pass your filter scopes as an array `--input-filters=search date`
+
 Include the spotlight_search javascript by adding the line `//= require spotlight_search` to your `app/assets/javascripts/application.js`
 
 ## Usage
@@ -72,66 +80,17 @@ Please note that the below code is in haml.
 
 **STEP - 1 Filters**
 
-**Wrapping div for filters**
+**Filter Wrapper, Select-tags and Inputs**
 
-  First step is to add wrapper div around the filters you're going to add. Include this line at the beginning of your filter inputs
-    
-  ```
-    = filter_wrapper(data_behaviours, classes=nil)
-
-    <!-- Data attributes can be passed as a Hash and the below are mandatory -->
-      
-      {filter_url: '/users', replacement_class: 'users-table'}  
-    
-    <!-- Classes are optional and you can pass them as a String -->
-      
-      "filter-classes"
-
-  ```
-
-  * `data-filter-url` Is mandatory, this is the search URL, Mostly this will hit the index action.
-
-  * `data-replacement-class` After ajax this is the class name where the data will get appended.
-
-**Select-tags and Inputs**
-
-  ```
-    <!-- This is to generate a select tag for filters. -->
-    = cm_select_tag(select_options, data_behaviours, classes=nil, placeholder=nil)
-  ```
-
-  * `select_options` this variable carries the options to the select tag.
-
-  ```
-    <!-- This is to generate a text input field for filters. -->
-    = cm_textfield_tag(data_behaviours, classes=nil, placeholder=nil)
-  ```
-
-  ```
-    <!-- This is to revert all filters. -->
-    = clear_filters(clear_path, classes=nil, data_behaviours=nil, clear_text=nil)
-  ```
-  * `clear_path` this the controller index path.
-
-  * `clear_text` this gives the text for the `a` tag.
-
-  Common attributes
-
-  * `data_behaviours` this carries data attributes as a Hash to `select_tag` or `input`.
-    
-    These are mandatory attributes for filters
-    
-     `{behaviour: "filter", scope: "search", type: "(select/input)-filter}`
-
-    `data-behaviour="filter"` If the input behaviour is set to filter then this will get added to ajax.
-
-    `data-scope="search"` This is the model scope name, The helper method will call this when filter is applied.
-
-    `data-type="input-filter"` This is to tell if the element is input or select other value is `data-type="select-filter"`
-
-  * `classes` HTML classes can be passed as a string arguement for inputs/select tags.
-
-  * `placeholder` this arguement passes the placeholder for input/select tags.
+| Generator                                                                        | *Mandatory(Data Attributes, Select options)                                                                            | *Optional(Classes, Placeholders)                                                       |
+|----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+| `= filter_wrapper(data_behaviours, classes=nil)`                                 | `{filter_url: '/users', replacement_class: 'users-table'}`                                                             | "filter-classes"                                                                       |
+|                                                                                  |                                                                                                                        |                                                                                        |
+| `= cm_select_tag(select_options, data_behaviours, classes=nil, placeholder=nil)` | `{behaviour: "filter", scope: "status", type: "select-filter}` , User.all.map {\|user\| [user.name.titleize, user.id]} | `"user-select"`, placeholder = `"Users"`                                               |
+|                                                                                  |                                                                                                                        |                                                                                        |
+| `= cm_textfield_tag(data_behaviours, classes=nil, placeholder=nil)`              | `{behaviour: "filter", scope: "search", type: "input-filter}`                                                          | `"user-search"`, placeholder = `"Search"`                                              |
+|                                                                                  |                                                                                                                        |                                                                                        |
+| `= clear_filters(clear_path, classes=nil, data_behaviours=nil, clear_text=nil)`  | clear_path = `users_path`                                                                                              | `"clear-filter"`, data_behaviours = `{behaviour: 'clear'}`, clear_text = `"Clear all"` |
 
 
 **STEP - 2 Pagination**
