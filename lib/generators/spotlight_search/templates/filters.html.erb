@@ -1,4 +1,4 @@
-= filter_wrapper({filter_url: '/<%= model %>', replacement_class: "<%= model %>-table"})
+= filter_wrapper({filter_url: '/admin/<%= model %>', replacement_class: "<%= model %>-table"})
 <%- @options.filters.each do |filter| -%>
 <%- filter_arr = filter.split(':') -%>
 <%- if filter_arr[1].eql?('input') -%>
@@ -6,7 +6,7 @@
 <%- elsif filter_arr[1].eql?('select') -%>
   = cm_select_tag([["<%= model.titleize %>", "<%= model %>"]], {behaviour: 'filter', scope: "<%= filter_arr[0] %>", type: 'select-filter', placeholder: ''}, "select2-single")
 <%- elsif filter_arr[1].eql?('multi_select') -%>
-  = cm_multi_select_tag([["<%= model.titleize %>", "<%= model %>"]], {behaviour: 'filter', scope: "<%= filter_arr[0] %>", type: 'select-filter', placeholder: ''}, "select2-multiple")  
+  = cm_multi_select_tag([["<%= model.titleize %>", "<%= model %>"]], {behaviour: 'filter', scope: "<%= filter_arr[0] %>", type: 'select-filter', placeholder: ''}, "select2-multiple")
 <%- end -%>
 <%- end -%>
-  = clear_filters(<%= model %>_path, nil, nil, "Clear all")  
+  = clear_filters(admin_<%= model %>_path, nil, nil, "Clear all")
