@@ -20,6 +20,18 @@ Or install it manually:
 
     $ gem install spotlight_search
 
+Generator that installs mandatory files and gems to application
+
+    $ rails g spotlight_search:install
+
+Generator that installs filter and table files to application
+
+    $ rails g spotlight_search:filter orders --filters search:input order_status:multi_select status:select
+
+    Filter arguments can be passed as an array and the format is `filter_scope:type_of_filter_input`
+
+    `--init_js` This flag installs necessary packages like Jquery, Coffeescript, Select2. You can ignore it by removing it from the command
+
 Include the spotlight_search javascript by adding the line `//= require spotlight_search` to your `app/assets/javascripts/application.js`
 
 ## Usage
@@ -66,24 +78,20 @@ end
 #### View
 Please note that the below code is in haml.
 
-**STEP - 1 Search**
+**STEP - 1 Filters**
 
-First step is to add the input box to search. Here there are few elements that should be placed mandatorily.
+**Filter Wrapper, Select-tags and Inputs**
 
-```
-.filters.w-100 data-filter-url="/admin/workshops" data-replacement-class="workshops_table"
-	.col-md-4.input-group.search
-		input#workshop-search-filter.form-control.filter-box name=("search_term_for_workshops ") placeholder=("Search Workshops") type="text" data-behaviour="filter" data-scope="search" data-type="input-filter"
-```
+| Generator                                                                        | *Mandatory(Data Attributes, Select options)                                                                            | *Optional(Classes, Placeholders)                                                       |
+|----------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+| `= filter_wrapper(data_behaviours, classes=nil)`                                 | `{filter_url: '/users', replacement_class: 'users-table'}`                                                             | "filter-classes"                                                                       |
+|                                                                                  |                                                                                                                        |                                                                                        |
+| `= cm_select_tag(select_options, data_behaviours, classes=nil, placeholder=nil)` | `{behaviour: "filter", scope: "status", type: "select-filter}` , User.all.map {\|user\| [user.name.titleize, user.id]} | `"user-select"`, placeholder = `"Users"`                                               |
+|                                                                                  |                                                                                                                        |                                                                                        |
+| `= cm_textfield_tag(data_behaviours, classes=nil, placeholder=nil)`              | `{behaviour: "filter", scope: "search", type: "input-filter}`                                                          | `"user-search"`, placeholder = `"Search"`                                              |
+|                                                                                  |                                                                                                                        |                                                                                        |
+| `= clear_filters(clear_path, classes=nil, data_behaviours=nil, clear_text=nil)`  | clear_path = `users_path`                                                                                              | `"clear-filter"`, data_behaviours = `{behaviour: 'clear'}`, clear_text = `"Clear all"` |
 
-The elements that should be placed mandatorily are
-
-  * `.filters` All search input / select filter should be nested inside this class name.
-  * `data-filter-url` Is mandatory, this is the search URL, Mostly this will hit the index action.
-  * `data-replacement-class` After ajax this is the class name where the data will get appended.
-  * `data-behaviour="filter"` If the input behaviour is set to filter then this will get added to ajax
-  * `data-scope="search"` This is the model scope name, The helper method will call this when filter is applied.
-  * `data-type="input-filter"` This is to tell if the element is input or select other value is `data-type="select-filter"`
 
 **STEP - 2 Pagination**
 

@@ -1,0 +1,83 @@
+class Admin::<%= model.titleize %>Controller < ApplicationController
+  before_action :set_<%= model.singularize %>, only: [:show, :edit, :update, :destroy]
+
+  # GET /<%= model %>
+  # GET /<%= model %>.json
+  def index
+    @filtered_result = <%= model.classify %>.all.filter_by(params[:page], filter_params.to_h, sort_params.to_h)
+  end
+
+  # GET /<%= model %>/1
+  # GET /<%= model %>/1.json
+  def show
+  end
+
+  # GET /<%= model %>/new
+  def new
+    @<%= model.singularize %> = Profile.new
+  end
+
+  # GET /<%= model %>/1/edit
+  def edit
+  end
+
+  # POST /<%= model %>
+  # POST /<%= model %>.json
+  def create
+    @<%= model.singularize %> = Profile.new(<%= model.singularize %>_params)
+
+    respond_to do |format|
+      if @<%= model.singularize %>.save
+        format.html { redirect_to @<%= model.singularize %>, notice: 'Profile was successfully created.' }
+        format.json { render :show, status: :created, location: @<%= model.singularize %> }
+      else
+        format.html { render :new }
+        format.json { render json: @<%= model.singularize %>.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PATCH/PUT /<%= model %>/1
+  # PATCH/PUT /<%= model %>/1.json
+  def update
+    respond_to do |format|
+      if @<%= model.singularize %>.update(<%= model.singularize %>_params)
+        format.html { redirect_to @<%= model.singularize %>, notice: 'Profile was successfully updated.' }
+        format.json { render :show, status: :ok, location: @<%= model.singularize %> }
+      else
+        format.html { render :edit }
+        format.json { render json: @<%= model.singularize %>.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /<%= model %>/1
+  # DELETE /<%= model %>/1.json
+  def destroy
+    @<%= model.singularize %>.destroy
+    respond_to do |format|
+      format.html { redirect_to <%= model.singularize %>s_url, notice: 'Profile was successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
+
+  private
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_<%= model.singularize %>
+    @<%= model.singularize %> = Profile.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def <%= model.singularize %>_params
+    params.require(:<%= model.singularize %>).permit()
+  end
+
+  def filter_params
+    params.require(:filters).permit(<%= @options.filters.join(', ') %>) if params[:filters]
+    end
+
+  def sort_params
+    params.require(:sort).permit(:sort_column, :sort_direction) if params[:sort]
+  end
+end
