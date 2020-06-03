@@ -24,15 +24,28 @@ Generator that installs mandatory files and gems to application
 
     $ rails g spotlight_search:install
 
+The install generator does the following
+
+* `require spotlight_search` added to application.js
+
+* Copies required files for the spotlight_search to work, Such as gemassets.rb, webpacker.yml, environment.js
+
+* Copies initializer file
+
+* Adds a line in route for mounting.
+
 Generator that installs filter and table files to application
 
     $ rails g spotlight_search:filter orders --filters search:input order_status:multi_select status:select
 
-    Filter arguments can be passed as an array and the format is `filter_scope:type_of_filter_input`
+The install generator does the following
 
-    `--init_js` This flag installs necessary packages like Jquery, Coffeescript, Select2. You can ignore it by removing it from the command
+* Copies the filter partial and the controller with necessary changes
 
-Include the spotlight_search javascript by adding the line `//= require spotlight_search` to your `app/assets/javascripts/application.js`
+Filter arguments can be passed as an array and the format is `filter_scope:type_of_filter_input`
+
+`--init_js` This flag installs necessary packages like Jquery, Coffeescript, Select2. You can ignore it by removing it from the command
+
 
 ## Usage
 
@@ -113,20 +126,6 @@ th = sortable "name", "Name", @filtered_result.sort[:sort_column], @filtered_res
 
 You will need to have a background job processor such as `sidekiq`, `resque`, `delayed_job` etc as the file will be generated in the background and will be sent to the email passed. If you need to use any other service for sending emails, you will need to override `ExportMailer` class.
 
-#### Initializer
-An initializer will have to be created to extend the functionality to ActiveRecord.
-
-```ruby
-  # config/initializers/spotlight_search.rb
-  ActiveRecord::Base.include SpotlightSearch::ExportableColumns
-```
-
-#### Routes
-A line has to be added to the routes.
-
-```ruby
-mount SpotlightSearch::Engine => '/spotlight_search'
-```
 
 #### <a name="export-view"></a>View
 

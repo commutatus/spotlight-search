@@ -10,6 +10,8 @@ module SpotlightSearch
         copy_file 'webpacker.yml', 'config/webpacker.yml'
         copy_file 'environment.js', 'config/webpack/environment.js'
         copy_file 'coffee.js', 'config/webpack/loaders/coffee.js'
+        copy_file 'spotlight_search.rb', 'config/initializers/spotlight_search.rb'
+        route "mount SpotlightSearch::Engine => '/spotlight_search'"
       end
 
       def add_essentials
@@ -22,15 +24,6 @@ module SpotlightSearch
         template "application.js", "app/javascript/packs/application.js"
         template 'scaffolds.coffee', "app/javascript/application/coffee_scripts/scaffolds.coffee"
         gem 'kaminari', '~> 1.2.1' unless File.readlines("Gemfile").grep(/kaminari/).size > 0
-      end
-
-      def edit_webpacker_yml
-        webpacker = YAML::load_file('config/webpacker.yml')
-        webpacker['default']['resolved_gems_output_path'] = '/tmp/_add_gem_paths.js'
-        webpacker['default']['resolved_gems'] = ['spotlight_search']
-        webpacker['default']['extensions'] = '.coffee'
-        webpacker['production']['webpack_compile_output'] = true
-        File.open('config/webpacker.yml', 'w') {|f| f.write webpacker.to_yaml }
       end
 
     end
