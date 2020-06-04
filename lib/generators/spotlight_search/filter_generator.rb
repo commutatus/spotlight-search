@@ -8,6 +8,9 @@ module SpotlightSearch
 
       def copy_filter_contents_to_app
         if @options.filters?
+          inject_into_file "app/models/#{model.singularize}.rb", after: "ApplicationRecord" do
+            "\n  include SpotlightSearch\n"
+          end
           template 'filters.html.erb', "app/views/admin/#{model}/_filters.html.slim"
           template 'controller.rb.erb', "app/controllers/admin/#{model}_controller.rb"
         end
