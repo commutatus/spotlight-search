@@ -4,6 +4,13 @@
 
 It helps filtering, sorting and exporting tables easier.
 
+First create a new rails project with the following command. If you are adding to existing project skip this
+
+```
+rails new blog -m https://raw.githubusercontent.com/commutatus/cm-rails-template/devise_integration/template.rb
+```
+
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -43,8 +50,6 @@ The install generator does the following
 * Copies the filter partial and the controller with necessary changes
 
 Filter arguments can be passed as an array and the format is `filter_scope:type_of_filter_input`
-
-`--init_js` This flag installs necessary packages like Jquery, Coffeescript, Select2. You can ignore it by removing it from the command
 
 
 ## Usage
