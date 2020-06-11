@@ -95,10 +95,13 @@ module SpotlightSearch
 
     def cm_multi_select_tag(select_options, data_behaviours, classes=nil, placeholder=nil)
       select_tag data_behaviours[:scope], options_for_select(select_options), class: "#{classes}", data: data_behaviours, include_blank: "#{placeholder}", multiple: true
-    end    
+    end
 
     def cm_textfield_tag(data_behaviours, classes=nil, placeholder=nil)
-      text_field_tag data_behaviours[:scope], '', class: "#{classes}", data: data_behaviours, placeholder: "#{placeholder}"   
+      tag.div class: 'filter-field' do
+        concat text_field_tag data_behaviours[:scope], '', class: "#{classes}", data: data_behaviours, placeholder: "#{placeholder}"
+        concat tag.span class: 'fa fa-search search-icon'
+      end
     end
 
     def clear_filters(clear_path, classes=nil, data_behaviours=nil, clear_text=nil)
@@ -121,25 +124,25 @@ module SpotlightSearch
     end
 
     def cm_paginate(facets)
-      tag.div class: 'text-center' do
+      tag.div class: 'cm-pagination' do
         tag.div class: 'nav navbar navbar-inner' do
           tag.ul class: 'pagination' do
             if facets.previous_page != false
               previous_page = tag.li do
-                tag.button class: 'btn btn-bordered', data: { behaviour: 'previous-page'} do
+                tag.button class: 'cm-pagination__item', data: { behaviour: 'previous-page'} do
                   tag.span "Previous"
                 end
               end
             end
             current_page = content_tag :li do
-              tag.a class: 'btn btn-bordered mx-2', data: {sort_column: facets.sort[:sort_column], sort_direction: facets.sort[:sort_direction], page: facets.current_page, behaviour: 'current-page' } do
+              tag.a class: 'cm-pagination__item', data: {sort_column: facets.sort[:sort_column], sort_direction: facets.sort[:sort_direction], page: facets.current_page, behaviour: 'current-page' } do
                 "Showing #{facets.current_page} of #{facets.total_pages} pages"
               end
             end
 
             if facets.next_page != false
               next_page = tag.li do
-                tag.button class: 'btn btn-bordered', data: { behaviour: 'next-page'} do
+                tag.button class: 'cm-pagination__item', data: { behaviour: 'next-page'} do
                   tag.span "Next"
                 end
               end
