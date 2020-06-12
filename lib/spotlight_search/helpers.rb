@@ -135,7 +135,7 @@ module SpotlightSearch
               end
             end
             current_page = content_tag :li do
-              tag.a class: 'cm-pagination__item', data: {sort_column: facets.sort[:sort_column], sort_direction: facets.sort[:sort_direction], page: facets.current_page, behaviour: 'current-page' } do
+              tag.button class: 'cm-pagination__item', data: {sort_column: facets.sort[:sort_column], sort_direction: facets.sort[:sort_direction], page: facets.current_page, behaviour: 'current-page' } do
                 "Showing #{facets.current_page} of #{facets.total_pages} pages"
               end
             end
