@@ -22,7 +22,7 @@ class Admin::<%= model.titleize %>Controller < ApplicationController
 
   # GET /<%= model %>/new
   def new
-    @<%= model.singularize %> = Profile.new
+    @<%= model.singularize %> = <%= model.singularize.titleize %>.new
   end
 
   # GET /<%= model %>/1/edit
@@ -32,11 +32,11 @@ class Admin::<%= model.titleize %>Controller < ApplicationController
   # POST /<%= model %>
   # POST /<%= model %>.json
   def create
-    @<%= model.singularize %> = Profile.new(<%= model.singularize %>_params)
+    @<%= model.singularize %> = <%= model.singularize.titleize %>.new(<%= model.singularize %>_params)
 
     respond_to do |format|
       if @<%= model.singularize %>.save
-        format.html { redirect_to @<%= model.singularize %>, notice: 'Profile was successfully created.' }
+        format.html { redirect_to @<%= model.singularize %>, notice: '<%= model.singularize.titleize %> was successfully created.' }
         format.json { render :show, status: :created, location: @<%= model.singularize %> }
       else
         format.html { render :new }
@@ -50,7 +50,7 @@ class Admin::<%= model.titleize %>Controller < ApplicationController
   def update
     respond_to do |format|
       if @<%= model.singularize %>.update(<%= model.singularize %>_params)
-        format.html { redirect_to @<%= model.singularize %>, notice: 'Profile was successfully updated.' }
+        format.html { redirect_to @<%= model.singularize %>, notice: '<%= model.singularize.titleize %> was successfully updated.' }
         format.json { render :show, status: :ok, location: @<%= model.singularize %> }
       else
         format.html { render :edit }
@@ -64,7 +64,7 @@ class Admin::<%= model.titleize %>Controller < ApplicationController
   def destroy
     @<%= model.singularize %>.destroy
     respond_to do |format|
-      format.html { redirect_to <%= model.singularize %>s_url, notice: 'Profile was successfully destroyed.' }
+      format.html { redirect_to <%= model.singularize %>s_url, notice: '<%= model.singularize.titleize %> was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -73,7 +73,7 @@ class Admin::<%= model.titleize %>Controller < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_<%= model.singularize %>
-    @<%= model.singularize %> = Profile.find(params[:id])
+    @<%= model.singularize %> = <%= model.singularize.titleize %>.find(params[:id])
   end
 
   # Only allow a list of trusted parameters through.
