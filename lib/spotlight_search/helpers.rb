@@ -89,18 +89,31 @@ module SpotlightSearch
       end
     end
 
-    def cm_single_select_tag(select_options, data_behaviours, classes=nil, placeholder=nil)
-      select_tag data_behaviours[:scope], options_for_select(select_options), class: "#{classes}", data: data_behaviours, include_blank: "#{placeholder}"
-    end
-
-    def cm_multi_select_tag(select_options, data_behaviours, classes=nil, placeholder=nil)
-      select_tag data_behaviours[:scope], options_for_select(select_options), class: "#{classes}", data: data_behaviours, include_blank: "#{placeholder}", multiple: true
-    end
-
-    def cm_textfield_tag(data_behaviours, classes=nil, placeholder=nil)
-      tag.div class: 'filter-field' do
-        concat text_field_tag data_behaviours[:scope], '', class: "#{classes}", data: data_behaviours, placeholder: "#{placeholder}"
-        concat tag.span class: 'fa fa-search search-icon'
+    def cm_filter_tag(input_type, value, scope_name, classes = nil, placeholder = nil)
+      case input_type
+      when 'input'
+        tag.div class: 'filter-field' do
+          concat text_field_tag scope_name, '', class: "#{classes}", data: {behaviour: "filter", scope: scope_name, type: "input-filter"}, placeholder: "#{placeholder}"
+          concat tag.span class: 'fa fa-search search-icon'
+        end
+      when 'single-select'
+        tag.div class: 'filter-field' do
+          select_tag scope_name, options_for_select(value), class: "#{classes} select2-single", data: {behaviour: "filter", scope: scope_name, type: "select-filter"}, include_blank: "#{placeholder}"
+        end
+      when 'multi-select'
+        tag.div class: 'filter-field' do
+          select_tag scope_name, options_for_select(value), class: "#{classes} select2-single", data: {behaviour: "filter", scope: scope_name, type: "select2-multiple"}, include_blank: "#{placeholder}", multiple: true
+        end
+      when 'datetime'
+        tag.div class: 'filter-field' do
+          concat text_field_tag scope_name, '', class: "#{classes}", data: {behaviour: "filter", scope: scope_name, type: "input-filter", provide: "datepicker"}, placeholder: "#{placeholder}"
+          concat tag.span class: 'fa fa-search search-icon'
+        end
+      when 'daterange'
+        tag.div class: 'filter-field' do
+          concat text_field_tag scope_name, '', class: "#{classes} filter-rangepicker", data: {behaviour: "filter", scope: scope_name, type: "input-filter"}, placeholder: "#{placeholder}"
+          concat tag.span class: 'fa fa-search search-icon'
+        end
       end
     end
 

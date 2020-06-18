@@ -16,9 +16,7 @@ module SpotlightSearch
       end
 
       def add_essentials
-        system("yarn add jquery")
-        system("yarn add coffeescript")
-        system("yarn add select2")
+        system("yarn add jquery coffeescript coffee-loader select2 popper.js daterangepicker bootstrap-datepicker")
         template "application.js", "app/javascript/packs/application.js"
         template 'scaffolds.coffee', "app/javascript/application/coffee_scripts/scaffolds.coffee"
         gem 'kaminari'

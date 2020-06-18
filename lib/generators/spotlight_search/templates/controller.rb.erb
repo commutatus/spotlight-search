@@ -36,7 +36,7 @@ class Admin::<%= model.titleize %>Controller < ApplicationController
 
     respond_to do |format|
       if @<%= model.singularize %>.save
-        format.html { redirect_to @<%= model.singularize %>, notice: '<%= model.singularize.titleize %> was successfully created.' }
+        format.html { redirect_to admin_<%= model.singularize %>_path(@<%= model.singularize %>), notice: '<%= model.singularize.titleize %> was successfully created.' }
         format.json { render :show, status: :created, location: @<%= model.singularize %> }
       else
         format.html { render :new }
@@ -50,7 +50,7 @@ class Admin::<%= model.titleize %>Controller < ApplicationController
   def update
     respond_to do |format|
       if @<%= model.singularize %>.update(<%= model.singularize %>_params)
-        format.html { redirect_to @<%= model.singularize %>, notice: '<%= model.singularize.titleize %> was successfully updated.' }
+        format.html { redirect_to admin_<%= model.singularize %>_path(@<%= model.singularize %>), notice: '<%= model.singularize.titleize %> was successfully updated.' }
         format.json { render :show, status: :ok, location: @<%= model.singularize %> }
       else
         format.html { render :edit }
@@ -64,7 +64,7 @@ class Admin::<%= model.titleize %>Controller < ApplicationController
   def destroy
     @<%= model.singularize %>.destroy
     respond_to do |format|
-      format.html { redirect_to <%= model.singularize %>s_url, notice: '<%= model.singularize.titleize %> was successfully destroyed.' }
+      format.html { redirect_to admin_<%= model %>_path, notice: '<%= model.singularize.titleize %> was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
