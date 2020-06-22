@@ -1,4 +1,4 @@
-class Admin::<%= model.titleize %>Controller < ApplicationController
+class Admin::<%= model.titleize.gsub(' ', '') %>Controller < ApplicationController
   before_action :set_<%= model.singularize %>, only: [:show, :edit, :update, :destroy]
 
   # GET /<%= model %>
@@ -22,7 +22,7 @@ class Admin::<%= model.titleize %>Controller < ApplicationController
 
   # GET /<%= model %>/new
   def new
-    @<%= model.singularize %> = <%= model.singularize.titleize %>.new
+    @<%= model.singularize %> = <%= model.singularize.titleize.gsub(' ', '') %>.new
   end
 
   # GET /<%= model %>/1/edit
@@ -32,11 +32,11 @@ class Admin::<%= model.titleize %>Controller < ApplicationController
   # POST /<%= model %>
   # POST /<%= model %>.json
   def create
-    @<%= model.singularize %> = <%= model.singularize.titleize %>.new(<%= model.singularize %>_params)
+    @<%= model.singularize %> = <%= model.singularize.titleize.gsub(' ', '') %>.new(<%= model.singularize %>_params)
 
     respond_to do |format|
       if @<%= model.singularize %>.save
-        format.html { redirect_to admin_<%= model.singularize %>_path(@<%= model.singularize %>), notice: '<%= model.singularize.titleize %> was successfully created.' }
+        format.html { redirect_to admin_<%= model.singularize %>_path(@<%= model.singularize %>), notice: '<%= model.singularize.titleize.gsub(' ', '') %> was successfully created.' }
         format.json { render :show, status: :created, location: @<%= model.singularize %> }
       else
         format.html { render :new }
@@ -50,7 +50,7 @@ class Admin::<%= model.titleize %>Controller < ApplicationController
   def update
     respond_to do |format|
       if @<%= model.singularize %>.update(<%= model.singularize %>_params)
-        format.html { redirect_to admin_<%= model.singularize %>_path(@<%= model.singularize %>), notice: '<%= model.singularize.titleize %> was successfully updated.' }
+        format.html { redirect_to admin_<%= model.singularize %>_path(@<%= model.singularize %>), notice: '<%= model.singularize.titleize.gsub(' ', '') %> was successfully updated.' }
         format.json { render :show, status: :ok, location: @<%= model.singularize %> }
       else
         format.html { render :edit }
@@ -64,7 +64,7 @@ class Admin::<%= model.titleize %>Controller < ApplicationController
   def destroy
     @<%= model.singularize %>.destroy
     respond_to do |format|
-      format.html { redirect_to admin_<%= model %>_path, notice: '<%= model.singularize.titleize %> was successfully destroyed.' }
+      format.html { redirect_to admin_<%= model %>_path, notice: '<%= model.singularize.titleize.gsub(' ', '') %> was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -73,7 +73,7 @@ class Admin::<%= model.titleize %>Controller < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_<%= model.singularize %>
-    @<%= model.singularize %> = <%= model.singularize.titleize %>.find(params[:id])
+    @<%= model.singularize %> = <%= model.singularize.titleize.gsub(' ', '') %>.find(params[:id])
   end
 
   # Only allow a list of trusted parameters through.

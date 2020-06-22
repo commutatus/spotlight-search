@@ -89,7 +89,7 @@ module SpotlightSearch
       end
     end
 
-    def cm_filter_tag(input_type, value, scope_name, classes = nil, placeholder = nil)
+    def cm_filter_tag(input_type, scope_name, value, classes = nil, placeholder = nil)
       case input_type
       when 'input'
         tag.div class: 'filter-field' do
