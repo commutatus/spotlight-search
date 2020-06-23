@@ -83,7 +83,7 @@ class Admin::<%= model.titleize.gsub(' ', '') %>Controller < ApplicationControll
 
   def filter_params
     params.require(:filters).permit(<%= @options.filters.map{ |f| ':' + f.split(':')[0] }.join(', ') %>) if params[:filters]
-    end
+  end
 
   def sort_params
     params.require(:sort).permit(:sort_column, :sort_direction) if params[:sort]

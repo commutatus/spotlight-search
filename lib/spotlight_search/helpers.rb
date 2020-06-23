@@ -102,7 +102,7 @@ module SpotlightSearch
         end
       when 'multi-select'
         tag.div class: 'filter-field' do
-          select_tag scope_name, options_for_select(value), class: "#{classes} select2-single", data: {behaviour: "filter", scope: scope_name, type: "select2-multiple"}, include_blank: "#{placeholder}", multiple: true
+          select_tag scope_name, options_for_select(value), class: "#{classes} select2-single", data: {behaviour: "filter", scope: scope_name, type: "select-filter"}, include_blank: "#{placeholder}", multiple: true
         end
       when 'datetime'
         tag.div class: 'filter-field' do

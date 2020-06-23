@@ -43,9 +43,10 @@ The install generator does the following
 
 Generator that installs filter and table files to application
     $ rails g spotlight_search filter orders --filters scope_name:filter_type
-    $ rails g spotlight_search:filter orders --filters search:input order_status:multi_select status:select
+    $ rails g spotlight_search filter orders --filters search:input order_status:multi_select status:select
 
-scope_name is the model scope name, eiter it has to be present or you can write after running this generator.
+scope_name is the model scope name, scope can written after running this generator, it won't throw any error that it has to be present.
+
 Following filter type are supported
 * input
 * single-select
