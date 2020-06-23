@@ -12,9 +12,9 @@ module SpotlightSearch
     end
 
     def exportable(email, klass, html_class: [])
-      tag.div do
-        concat tag.button "Export as excel", class: html_class.append("modal-btn"), data: {toggle: "modal", target: "#exportmodal"}
-        concat column_pop_up(email, klass)
+      tag.a "Export as excel", class: html_class.append("filter-btn modal-btn mr-2"), data: {toggle: "modal", target: "#exportmodal"} do
+        concat tag.i class: 'fa fa-download'
+        concat tag.span " Excel"
       end
     end
 
@@ -57,7 +57,8 @@ module SpotlightSearch
           when :v2
             concat checkbox_row_v2(klass)
           end
-          concat submit_tag 'Export as excel', class: 'btn btn-bordered export-to-file-btn'
+          concat tag.hr
+          concat submit_tag 'Export as excel', class: 'btn btn-primary btn-bordered export-to-file-btn'
         end
       end
     end
@@ -89,7 +90,7 @@ module SpotlightSearch
       end
     end
 
-    def cm_filter_tag(input_type, value, scope_name, classes = nil, placeholder = nil)
+    def cm_filter_tag(input_type, scope_name, value, classes = nil, placeholder = nil)
       case input_type
       when 'input'
         tag.div class: 'filter-field' do
@@ -102,7 +103,7 @@ module SpotlightSearch
         end
       when 'multi-select'
         tag.div class: 'filter-field' do
-          select_tag scope_name, options_for_select(value), class: "#{classes} select2-single", data: {behaviour: "filter", scope: scope_name, type: "select2-multiple"}, include_blank: "#{placeholder}", multiple: true
+          select_tag scope_name, options_for_select(value), class: "#{classes} select2-single", data: {behaviour: "filter", scope: scope_name, type: "select-filter"}, include_blank: "#{placeholder}", multiple: true
         end
       when 'datetime'
         tag.div class: 'filter-field' do
@@ -132,7 +133,7 @@ module SpotlightSearch
     def create_checkbox_v2(column_path)
       tag.div class: "col-md-4" do
         concat check_box_tag "columns[]", column_path, id: column_path.to_s.gsub('/', '-')
-        concat column_path.to_s.gsub('/', '_').humanize
+        concat " " + column_path.to_s.gsub('/', '_').humanize
       end
     end
 
