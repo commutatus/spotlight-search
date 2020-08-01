@@ -74,6 +74,15 @@ $(document).on('keyup', '[data-type="input-filter"]', function() {
   });
 });
 
+$(document).on('change', '[data-type="range-filter"]', function() {
+  var thisObj;
+  thisObj = $(this);
+  return $(function() {
+    return get_paginated_list(1, thisObj);
+  });
+});
+
+
 $(document).on('change', '[data-type="select-filter"]', function() {
   var thisObj;
   thisObj = $(this);

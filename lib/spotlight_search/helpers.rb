@@ -112,7 +112,7 @@ module SpotlightSearch
         end
       when 'daterange'
         tag.div class: 'filter-field' do
-          concat text_field_tag scope_name, '', class: "#{classes} filter-rangepicker", data: {behaviour: "filter", scope: scope_name, type: "input-filter"}, placeholder: "#{placeholder}"
+          concat text_field_tag scope_name, '', class: "#{classes} filter-rangepicker", data: {behaviour: "filter", scope: scope_name, type: "range-filter"}, placeholder: "#{placeholder}"
           concat tag.span class: 'fa fa-search search-icon'
         end
       end
