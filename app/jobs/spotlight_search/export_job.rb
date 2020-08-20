@@ -68,7 +68,7 @@ module SpotlightSearch
       columns.size.times { size_arr << 22 }
       xl = Axlsx::Package.new
       xl.workbook.add_worksheet do |sheet|
-        sheet.add_row columns, b: true
+        sheet.add_row columns&.map(&:titleize), b: true
         flattened_records.each do |record|
           sheet.add_row(columns.map { |column| record[column] })
         end
