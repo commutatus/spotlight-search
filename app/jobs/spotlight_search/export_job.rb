@@ -4,7 +4,6 @@ module SpotlightSearch
   class ExportJob < ApplicationJob
     def perform(klass_name, email, columns = [], filters = {}, sort = {})
       klass = klass_name.constantize
-      filters = filters.permit! if filters.present?
       records = get_records(klass, columns, filters, sort)
       file_path =
         case SpotlightSearch.exportable_columns_version
