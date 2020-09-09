@@ -10,11 +10,12 @@ module SpotlightSearch
         when :v1
           create_excel(records, klass.name, columns)
         when :v2
-          create_excel_v2(records, klass.name)
+          column_names = columns.map { |c| c.gsub('/', '_')}
+          create_excel_v2(records, klass.name, column_names)
         end
       subject = "#{klass.name} export at #{Time.now}"
       ExportMailer.send_excel_file(email, file_path, subject).deliver_now
-      File.delete(file_path)
+      File.delete(file_path) unless Rails.env.development?
     rescue StandardError => e
       ExportMailer.send_error_message(email, e).deliver_now
     end
@@ -61,16 +62,15 @@ module SpotlightSearch
       file_location
     end
 
-    def create_excel_v2(records, class_name)
+    def create_excel_v2(records, class_name, selected_columns)
       flattened_records = records.map { |record| SpotlightSearch::Utils.flatten_hash(record) }
-      columns = flattened_records[0].keys
       size_arr = []
-      columns.size.times { size_arr << 22 }
+      selected_columns.size.times { size_arr << 22 }
       xl = Axlsx::Package.new
       xl.workbook.add_worksheet do |sheet|
-        sheet.add_row columns, b: true
+        sheet.add_row selected_columns, b: true
         flattened_records.each do |record|
-          sheet.add_row(columns.map { |column| record[column] })
+          sheet.add_row(selected_columns.map { |column| record[column] })
         end
         sheet.column_widths(*size_arr)
       end
