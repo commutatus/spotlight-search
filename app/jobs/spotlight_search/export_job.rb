@@ -26,6 +26,11 @@ module SpotlightSearch
           records = records.send(scope, scope_args)
         end
       end
+      if klass.default_filters.present?
+        klass.default_filters.each do |scope|
+          records = records.send(scope)
+        end
+      end
       if sort.present?
         records = records.order("#{sort['sort_column']} #{sort['sort_direction']}")
       end

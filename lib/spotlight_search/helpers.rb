@@ -18,20 +18,20 @@ module SpotlightSearch
       end
     end
 
-    def column_pop_up(email, klass)
+    def column_pop_up(email, klass, required_filters = nil)
       tag.div class: "modal fade", id: "exportmodal", tabindex: "-1", role: "dialog", aria: {labelledby: "exportModal"} do
         tag.div class: "modal-dialog modal-lg", role: "document" do
           tag.div class: "modal-content" do
-            concat pop_ups(email, klass)
+            concat pop_ups(email, klass, required_filters)
           end
         end
       end
     end
 
-    def pop_ups(email, klass)
+    def pop_ups(email, klass, required_filters)
       tag.div do
         concat pop_up_header
-        concat pop_up_body(email, klass)
+        concat pop_up_body(email, klass, required_filters)
       end
     end
 
@@ -44,11 +44,12 @@ module SpotlightSearch
       end
     end
 
-    def pop_up_body(email, klass)
+    def pop_up_body(email, klass, required_filters)
       tag.div class: "modal-body" do
         form_tag '/spotlight_search/export_to_file', id: 'export-to-file-form', style: "width: 100%;", class:"spotlight-csv-export-form" do
           concat hidden_field_tag 'email', email, id: 'export-to-file-email'
           concat hidden_field_tag 'class_name', klass.to_s, id: 'export-to-file-klass'
+          filters_to_post_helper(required_filters) if required_filters
           params_to_post_helper(filters: controller.filter_params) if controller.filter_params
           params_to_post_helper(sort: controller.sort_params) if controller.sort_params
           case SpotlightSearch.exportable_columns_version
@@ -61,6 +62,12 @@ module SpotlightSearch
           concat submit_tag 'Export as excel', class: 'btn btn-primary btn-bordered export-to-file-btn'
         end
       end
+    end
+
+    def filters_to_post_helper(required_filters)
+      URI.decode_www_form(required_filters.to_param).each do |param|
+        concat hidden_field_tag "filters[#{param[0]}]", param[1]
+      end      
     end
 
     def params_to_post_helper(params)
