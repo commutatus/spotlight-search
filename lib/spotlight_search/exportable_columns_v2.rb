@@ -33,7 +33,7 @@ module SpotlightSearch
       end
 
       def default_scopes_for_export(*filter_scopes)
-        self.default_filters = [*filter_scopes]
+        self.default_filters = filter_scopes
       end      
 
       def _model_exportable_columns(klass, *record_fields, **associated_fields)
