@@ -32,6 +32,10 @@ module SpotlightSearch
         self.enabled_columns = [*record_fields, **associated_fields]
       end
 
+      def default_scopes_for_export(*filter_scopes)
+        self.default_filters = filter_scopes
+      end      
+
       def _model_exportable_columns(klass, *record_fields, **associated_fields)
         # Gets all the valid columns of a model
         # If any column is invalid, it also returns it
@@ -85,6 +89,7 @@ module SpotlightSearch
 
     included do
       class_attribute :enabled_columns, instance_accessor: false, default: nil
+      class_attribute :default_filters, instance_accessor: false, default: nil
     end
   end
 end
