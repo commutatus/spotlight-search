@@ -68,7 +68,7 @@ module SpotlightSearch
 
     def create_excel_v2(records, class_name)
       flattened_records = records.map { |record| SpotlightSearch::Utils.flatten_hash(record) }
-      columns = flattened_records[0].keys
+      columns = flattened_records.map{|x| x.keys}.flatten.uniq.sort
       size_arr = []
       columns.size.times { size_arr << 22 }
       xl = Axlsx::Package.new
