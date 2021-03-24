@@ -6,7 +6,7 @@ module SpotlightSearch
         if klass.validate_exportable_columns(params[:columns])
           (filter_params = params[:filters].permit!) if params[:filters].present?
           (sort_params = params[:sort].permit!) if params[:sort].present?
-          ExportJob.perform_later(klass.name, params[:email], params[:columns], filter_params, sort_params)
+          ExportJob.perform_later(klass.name, params[:tenant_name], params[:email], params[:columns], filter_params, sort_params)
           notice = 'Successfully queued for export'
         else
           notice = 'Invalid columns found'
