@@ -3,9 +3,8 @@
 module SpotlightSearch::Utils
   class << self
     def serialize_csv_columns(*columns)
-      association_hash = columns.map{|hashes| hashes if hashes.class.eql?(Hash)}.compact.last
-      hashes = association_hash.nil? ? {} : association_hash
-      columns = columns.map{|column| column if column.class.eql?(Symbol)}.compact
+      hashes = columns.select{|associations| associations if associations.class.eql?(Hash)}.last || {}
+      columns = columns.select{|column| column if column.class.eql?(Symbol)}
       # Turns an arbitrary list of args and kwargs into a list of params to be used in a form
       # For example, turns SpotlightSearch::Utils.serialize_csv_columns(:a, :b, c: [:d, e: :h], f: :g)
       # into [:a, :b, "c/d", "c/e/h", "f/g"]
