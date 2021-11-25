@@ -2,11 +2,13 @@
 
 module SpotlightSearch::Utils
   class << self
-    def serialize_csv_columns(*columns, **hashes)
+    def serialize_csv_columns(*columns)
+      association_hash = columns.select{|columnable| columnable.class.eql?(Hash)}.last || {}
+      parent_table_columns = columns.select{|columnable| columnable.class.eql?(Symbol)}
       # Turns an arbitrary list of args and kwargs into a list of params to be used in a form
       # For example, turns SpotlightSearch::Utils.serialize_csv_columns(:a, :b, c: [:d, e: :h], f: :g)
       # into [:a, :b, "c/d", "c/e/h", "f/g"]
-      columns.map(&:to_s) + hashes.map do |key, value|
+      parent_table_columns.map(&:to_s) + association_hash.map do |key, value|
         serialize_csv_columns(*value).map do |column|
           "#{key}/#{column}"
         end
