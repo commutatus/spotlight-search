@@ -6,6 +6,8 @@ require 'spotlight_search/utils'
 require 'spotlight_search/railtie' if defined?(Rails)
 require 'active_support'
 require 'active_support/rails'
+require 'ostruct'
+
 
 module SpotlightSearch
   extend ActiveSupport::Concern
@@ -21,7 +23,7 @@ module SpotlightSearch
 
   module ClassMethods
     def filter_by(page, filter_params = {}, sort_params = {})
-      filtered_result = OpenStruct.new
+      filtered_result = ::OpenStruct.new
       sort_column = self.column_names.include?(sort_params[:sort_column]) ? sort_params[:sort_column] : "#{self.table_name}.created_at"
       sort_direction = %w[asc desc].include?(sort_params[:sort_direction]) ? sort_params[:sort_direction] : "asc"
       sort_params = {sort_column: sort_column, sort_direction: sort_direction}
@@ -53,7 +55,7 @@ module SpotlightSearch
     def paginate(page, total_count)
       page = page.presence || 1
       per_page = 30
-      facets = OpenStruct.new # initializing OpenStruct instance
+      facets = ::OpenStruct.new # initializing OpenStruct instance
       facets.total_count = total_count
       facets.filtered_count = total_count
       facets.total_pages = (total_count/per_page.to_f).ceil
