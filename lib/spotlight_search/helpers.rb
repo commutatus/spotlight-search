@@ -156,14 +156,14 @@ module SpotlightSearch
               end
             end
             current_page = content_tag :li do
-              tag.button class: 'cm-pagination__item', data: {sort_column: facets.sort[:sort_column], sort_direction: facets.sort[:sort_direction], page: facets.current_page, behaviour: 'current-page' } do
+              tag.button class: 'cm-pagination__item btn btn-bordered mx-2', data: {sort_column: facets.sort[:sort_column], sort_direction: facets.sort[:sort_direction], page: facets.current_page, behaviour: 'current-page' } do
                 "Showing #{facets.current_page} of #{facets.total_pages} pages"
               end
             end
 
             if facets.next_page != false
               next_page = tag.li do
-                tag.button class: 'cm-pagination__item', data: { behaviour: 'next-page'} do
+                tag.button class: 'cm-pagination__item btn btn-bordered mx-2', data: { behaviour: 'next-page'} do
                   tag.span "Next"
                 end
               end
